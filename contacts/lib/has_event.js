@@ -7,8 +7,9 @@ function hasEvent(_public, _protected, event_name) {
     };
 
     _public['trigger' + capitalized] = function () {
+        var args = arguments, that = this;
         _(handlers).each(function (handler) {
-            handler();
+            handler.apply(that, args);
         });
     };
 }
