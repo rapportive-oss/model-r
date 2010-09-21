@@ -1,15 +1,15 @@
-// model(_public, _protected, attribute_name_one, attribute_name_two, ...)
+// lib.model(_public, _protected, attribute_name_one, attribute_name_two, ...)
 // makes this object a model object with accessor methods for named attributes,
 // events when attribute values change, etc.
 //
 // TODO: figure out how to deal with nested collections
-function model(_public, _protected) {
+lib.model = function (_public, _protected) {
     _protected.attributes = _protected.attributes || {};
 
     // Event methods:
     // onChange(function (attribute_name, new_value) { ... }) and
     // triggerChange(attribute_name, new_value)
-    hasEvent(_public, _protected, 'change');
+    lib.hasEvent(_public, _protected, 'change');
 
     var declared_attributes = Array.prototype.slice.apply(arguments).slice(2);
 
@@ -17,7 +17,7 @@ function model(_public, _protected) {
         // If attribute foo is declared, this generates the event methods:
         // onFooChange(function (new_value) { ... }) and
         // triggerFooChange(new_value)
-        hasEvent(_public, _protected, name + '_change');
+        lib.hasEvent(_public, _protected, name + '_change');
 
         // Define getter/setter method for the attribute. (jQuery style: getter
         // when called with no arguments, setter when called with one argument.)
@@ -52,4 +52,4 @@ function model(_public, _protected) {
     };
 
     return _public;
-}
+};

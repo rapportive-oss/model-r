@@ -1,12 +1,12 @@
 // Mixin which gives an object event handling capabilities. Call
-// hasEvent(_public, _protected, 'foo') to generate two methods for this event:
+// lib.hasEvent(_public, _protected, 'foo') to generate two methods for this event:
 // onFoo(), which takes a handler to be called when the event is triggered, and
 // triggerFoo(), which triggers the event. Any arguments passed to triggerFoo()
 // are passed through to the event handlers.
 //
 // This mixin also creates general methods on() and trigger(), which behave
 // like the methods above, but take an event name as their first argument.
-function hasEvent(_public, _protected, event_name) {
+lib.hasEvent = function (_public, _protected, event_name) {
 
     _protected.event_handlers = _protected.event_handlers || {};
     _protected.event_handlers[event_name] = _protected.event_handlers[event_name] || [];
@@ -42,4 +42,4 @@ function hasEvent(_public, _protected, event_name) {
             handler.apply(that, args);
         });
     };
-}
+};
