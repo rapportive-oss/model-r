@@ -24,6 +24,11 @@ lib.model = function (_public, _protected) {
         _public[name.camelize(true)] = function (new_value) {
             return _public.attribute(name, new_value);
         };
+
+        // Define delayed setter for the attribute. (see setAttributeLater)
+        _public['set' + name.camelize() + 'Later'] = function (new_value) {
+            _public.setAttributeLater(name, new_value);
+        };
     });
 
     // With one argument, returns the value of the attribute with that name.
@@ -49,6 +54,16 @@ lib.model = function (_public, _protected) {
             }
         }
         return _protected.attributes;
+    };
+
+    // Sets the attribute with the first argument's name to the second argument, but delays
+    // that action until the current call stack has completed. Useful if we want to trigger
+    // a change of value eventually, but don't want it affecting other handlers of the event
+    // currently being handled.
+    _public.setAttributeLater = function (name, new_value) {
+        window.setTimeout(function () {
+            _public.attribute(name, new_value);
+        }, 0);
     };
 
     return _public;
