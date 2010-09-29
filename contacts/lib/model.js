@@ -19,11 +19,19 @@ lib.model = function (_public, _protected) {
         // triggerFooChange(new_value)
         lib.hasEvent(_public, _protected, name + '_change');
 
-        // Define getter/setter method for the attribute. (jQuery style: getter
-        // when called with no arguments, setter when called with one argument.)
-        _public[name.camelize(true)] = function (new_value) {
+        // Define getter/setter for the attribute.
+        // See http://ejohn.org/blog/javascript-getters-and-setters/
+        //
+        // So you can write (e.g.):
+        //     person.name = "Bob";
+        //     print(person.name);
+
+        _public.__defineGetter__(name, function() {
+            return _public.attribute(name);
+        });
+        _public.__defineSetter__(name, function(new_value) {
             return _public.attribute(name, new_value);
-        };
+        });
 
         // Define delayed setter for the attribute. (see setAttributeLater)
         _public['set' + name.camelize() + 'Later'] = function (new_value) {
