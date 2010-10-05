@@ -76,3 +76,23 @@ lib.model = function (_public, _protected) {
 
     return _public;
 };
+
+// Method to build a new instance of a model from an attributes hash.
+//
+// To use:
+//     models.animal = function(...) {
+//         ...
+//         lib.model(..., 'name', 'species', 'legs');
+//         ...
+//     };
+//     models.animal.build = lib.model.build;
+//
+//     var fido = models.animal.build({
+//         name: "Fido",
+//         species: "dog",
+//         legs: 4});
+lib.model.build = function(attributes) {
+    var obj = this();
+    obj.attributes(attributes);
+    return obj;
+};
