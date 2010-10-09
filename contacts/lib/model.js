@@ -2,8 +2,7 @@
 // makes this object a model object with accessor methods for named attributes,
 // events when attribute values change, etc.
 //
-// TODO: figure out how to deal with nested collections
-lib.model = function (_public, _protected) {
+lib.model = function (_public, _protected, declared_attributes) {
     _protected.attributes = _protected.attributes || {};
 
     // Event methods:
@@ -11,7 +10,14 @@ lib.model = function (_public, _protected) {
     // triggerChange(attribute_name, new_value)
     lib.hasEvent(_public, _protected, 'change');
 
-    var declared_attributes = Array.prototype.slice.apply(arguments).slice(2);
+    // Allow either lib.model(_p, _p, ['a','b','c']);
+    //           or lib.model(_p, _p, 'a', 'b', 'c');
+    //
+    // The latter is more pleasant to interact with as a human,
+    // the former is better for automated interaction.
+    if (!_(declared_attributes).isArray()) {
+        declared_attributes = _(arguments).toArray().slice(2);
+    }
 
     _(declared_attributes).each(function (name) {
         // If attribute foo is declared, this generates the event methods:
@@ -77,6 +83,17 @@ lib.model = function (_public, _protected) {
         }, 0);
     };
 
+    // Bind this model to a particular attribute event of a container model.
+    // i.e. when a change event fires on this model, a change event will fire on the container's
+    // attribute.
+    _public.bindTo = function (parent, attribute) {
+        _public.onChange(function () {
+            parent.trigger(attribute + '_change', _public);
+        });
+        parent.trigger(attribute + '_change', _public);
+        return _public;
+    };
+
     return _public;
 };
 
@@ -98,4 +115,15 @@ lib.model.build = function(attributes) {
     var obj = this();
     obj.attributes(attributes);
     return obj;
+};
+
+// Given a list of attributes, create a simple model that contains them.
+lib.model.class_from_attributes = function (attributes) {
+    var klass = function () {
+        var _public = {}, _protected = {};
+        lib.model(_public, _protected, attributes);
+        return _public;
+    };
+    klass.build = lib.model.build;
+    return klass;
 };
