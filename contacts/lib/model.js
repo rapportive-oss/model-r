@@ -17,7 +17,11 @@ lib.model = function (_public, _protected) {
         // If attribute foo is declared, this generates the event methods:
         // onFooChange(function (new_value) { ... }) and
         // triggerFooChange(new_value)
-        lib.hasEvent(_public, _protected, name + '_change');
+        var change_event_name = name + '_change';
+        lib.hasEvent(_public, _protected, change_event_name);
+        _public.on(change_event_name, function (new_value) {
+            _public.triggerChange(name, new_value);
+        });
 
         // Define getter/setter for the attribute.
         // See http://ejohn.org/blog/javascript-getters-and-setters/
@@ -45,7 +49,6 @@ lib.model = function (_public, _protected) {
         if ((typeof(new_value) !== 'undefined') && (new_value !== _protected.attributes[name])) {
             _protected.attributes[name] = new_value;
             _public.trigger(name + '_change', new_value);
-            _public.triggerChange(name, new_value);
         }
         return _protected.attributes[name];
     };
