@@ -60,7 +60,7 @@ lib.model = function (_public, _protected) {
         if (typeof(new_attributes) !== 'undefined') {
             for (var attribute in new_attributes) {
                 if (new_attributes.hasOwnProperty(attribute)) {
-                    _public.attribute(attribute, new_attributes[attribute]);
+                    _public[attribute] = new_attributes[attribute];
                 }
             }
         }
