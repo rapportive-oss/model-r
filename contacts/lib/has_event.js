@@ -19,6 +19,14 @@ lib.hasEvent = function (_public, _protected, event_name) {
         _protected.event_handlers[name].push(handler);
     };
 
+    _public.removeHandler = _public.removeHandler || function (name, handler) {
+        var handlers = _protected.event_handlers[name];
+        if (!handlers) return;    // called before any handlers added
+        var index = handlers.indexOf(handler);
+        if (index < 0) return;    // not there
+        return handlers.splice(index, 1)[0];
+    };
+
     // Trigger the event handlers for an arbitrary event name.
     _public.trigger = _public.trigger || function (name) {
         var args = Array.prototype.slice.apply(arguments).slice(1), that = this;
