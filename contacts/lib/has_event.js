@@ -6,12 +6,9 @@
 //
 // This mixin also creates general methods on() and trigger(), which behave
 // like the methods above, but take an event name as their first argument.
-lib.hasEvent = function (_public, _protected, event_name) {
+lib.hasEvent = function (_public, _protected, event_names) {
 
     _protected.event_handlers = _protected.event_handlers || {};
-    _protected.event_handlers[event_name] = _protected.event_handlers[event_name] || [];
-
-    var handlers = _protected.event_handlers[event_name];
 
     // Register a new event handler for an arbitrary event name.
     _public.on = _public.on || function (name, handler) {
@@ -38,16 +35,29 @@ lib.hasEvent = function (_public, _protected, event_name) {
         }
     };
 
-    // Register a new event handler for this specific event.
-    _public['on' + event_name.camelize()] = function (handler) {
-        handlers.push(handler);
-    };
+    // Allow either lib.hasEvent(_p, _p, ['a', 'b', 'c']),
+    //           or lib.hasEvent(_p, _p, 'a', 'b', 'c')
+    if (!_(event_names).isArray()) {
+        event_names = _(arguments).toArray().slice(2);
+    }
 
-    // Trigger the event handlers for this specific event.
-    _public['trigger' + event_name.camelize()] = function () {
-        var args = arguments, that = this;
-        _(handlers).each(function (handler) {
-            handler.apply(that, args);
-        });
-    };
+    _(event_names).each(function (event_name) {
+
+        _protected.event_handlers[event_name] = _protected.event_handlers[event_name] || [];
+
+        var handlers = _protected.event_handlers[event_name];
+
+        // Register a new event handler for this specific event.
+        _public['on' + event_name.camelize()] = function (handler) {
+            handlers.push(handler);
+        };
+
+        // Trigger the event handlers for this specific event.
+        _public['trigger' + event_name.camelize()] = function () {
+            var args = arguments, that = this;
+            _(handlers).each(function (handler) {
+                handler.apply(that, args);
+            });
+        };
+    });
 };
