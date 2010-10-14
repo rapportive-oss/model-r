@@ -73,6 +73,14 @@ lib.model = function (_public, _protected, declared_attributes) {
         return _protected.attributes;
     };
 
+    _public.unbuild = function () {
+        var obj = {};
+        _(_protected.attributes).each(function (attr, name) {
+            obj[name] = _(attr.unbuild).isFunction() ? attr.unbuild() : attr;
+        });
+        return obj;
+    };
+
     // Sets the attribute with the first argument's name to the second argument, but delays
     // that action until the current call stack has completed. Useful if we want to trigger
     // a change of value eventually, but don't want it affecting other handlers of the event
