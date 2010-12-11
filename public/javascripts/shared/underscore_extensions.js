@@ -1,3 +1,6 @@
+/*jslint nomen: false */
+/*global _: false */
+
 (function (_) {
     _.mixin({
         // andand from ruby: returns an empty object if the input is falsey,

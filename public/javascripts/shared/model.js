@@ -1,3 +1,6 @@
+/*jslint nomen: false, onevar: false */
+/*global window: false, _: false, lib: false */
+
 // lib.model(_public, _protected, attribute_name_one, attribute_name_two, ...)
 // makes this object a model object with accessor methods for named attributes,
 // events when attribute values change, etc.
@@ -36,10 +39,10 @@ lib.model = function (_public, _protected, declared_attributes) {
         //     person.name = "Bob";
         //     print(person.name);
 
-        _public.__defineGetter__(name, function() {
+        _public.__defineGetter__(name, function () {
             return _public.attribute(name);
         });
-        _public.__defineSetter__(name, function(new_value) {
+        _public.__defineSetter__(name, function (new_value) {
             return _public.attribute(name, new_value);
         });
 
@@ -119,7 +122,7 @@ lib.model = function (_public, _protected, declared_attributes) {
 //         name: "Fido",
 //         species: "dog",
 //         legs: 4});
-lib.model.build = function(attributes) {
+lib.model.build = function (attributes) {
     var obj = this();
     obj.attributes(attributes);
     return obj;

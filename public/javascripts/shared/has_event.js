@@ -1,3 +1,6 @@
+/*jslint nomen: false, onevar: false */
+/*global _: false, lib: false */
+
 // Mixin which gives an object event handling capabilities. Call
 // lib.hasEvent(_public, _protected, 'foo') to generate two methods for this event:
 // onFoo(), which takes a handler to be called when the event is triggered, and
@@ -18,9 +21,13 @@ lib.hasEvent = function (_public, _protected, event_names) {
 
     _public.removeHandler = _public.removeHandler || function (name, handler) {
         var handlers = _protected.event_handlers[name];
-        if (!handlers) return;    // called before any handlers added
+        if (!handlers) {
+            return;
+        }
         var index = handlers.indexOf(handler);
-        if (index < 0) return;    // not there
+        if (index < 0) {
+            return; // no such handler
+        }
         return handlers.splice(index, 1)[0];
     };
 
