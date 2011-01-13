@@ -47,7 +47,7 @@ lib.model = function (_public, _protected, declared_attributes) {
         });
 
         // Define delayed setter for the attribute. (see setAttributeLater)
-        _public['set' + name.camelize() + 'Later'] = function (new_value) {
+        _public['set' + _(name).camelize() + 'Later'] = function (new_value) {
             _public.setAttributeLater(name, new_value);
         };
     });

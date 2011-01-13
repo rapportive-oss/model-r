@@ -55,12 +55,12 @@ lib.hasEvent = function (_public, _protected, event_names) {
         var handlers = _protected.event_handlers[event_name];
 
         // Register a new event handler for this specific event.
-        _public['on' + event_name.camelize()] = function (handler) {
+        _public['on' + _(event_name).camelize()] = function (handler) {
             handlers.push(handler);
         };
 
         // Trigger the event handlers for this specific event.
-        _public['trigger' + event_name.camelize()] = function () {
+        _public['trigger' + _(event_name).camelize()] = function () {
             var args = arguments, that = this;
             _(handlers).each(function (handler) {
                 handler.apply(that, args);
