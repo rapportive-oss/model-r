@@ -1,5 +1,8 @@
 describe("lib.model", function () {
     describe("cloneable", function () {
+
+        var instance_number, example_model;
+
         function superModel() {
             var _public = {}, _protected = {};
             lib.model(_public, _protected, "number_attr", "string_attr", "model_attr", "array_attr", "object_attr");
@@ -13,6 +16,8 @@ describe("lib.model", function () {
             _protected.cloneable(subModel);
             _public.id = id;
             _public.value = value;
+            _public.instance_number = instance_number;
+            instance_number += 1;
             return _public;
         }
 
@@ -23,9 +28,8 @@ describe("lib.model", function () {
             return _public;
         }
 
-        var example_model;
-
         beforeEach(function () {
+            instance_number = 0;
             example_model = superModel();
             example_model.number_attr = 42;
             example_model.string_attr = "hello";
@@ -80,6 +84,8 @@ describe("lib.model", function () {
 
         it("should deep clone cloneable model objects", function () {
             var clone = example_model.clone();
+            expect(example_model.object_attr.model.instance_number).toEqual(2);
+            expect(clone.object_attr.model.instance_number).toBeOneOf(3, 4, 5);
             clone.array_attr[2].obj.value = "ccc";
             clone.object_attr.model.value = "ddd";
             expect(example_model.array_attr[2].obj.value).toEqual("c");
