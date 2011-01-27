@@ -105,6 +105,35 @@ lib.model = function (_public, _protected, declared_attributes) {
         return _public;
     };
 
+    // If a model wants to support deep cloning, it can call cloneable, passing the
+    // model's constructor function (which will be used to create cloned instances).
+    // This generates a public clone() method on the model.
+    _protected.cloneable = function (model_class) {
+
+        function deepClone(thing) {
+            if (typeof(thing) !== 'object') {
+                return thing;
+            } else if (_(thing).isArray()) {
+                return _(thing).map(deepClone);
+            } else if (typeof(thing.clone) === 'function') {
+                return thing.clone();
+            } else {
+                return _(thing).reduce(function (memo, value, key) {
+                    memo[key] = deepClone(value);
+                    return memo;
+                }, {});
+            }
+        }
+
+        _public.clone = function () {
+            var instance = model_class();
+            _(_protected.attributes).each(function (attr, name) {
+                instance[name] = deepClone(attr);
+            });
+            return instance;
+        };
+    };
+
     return _public;
 };
 
