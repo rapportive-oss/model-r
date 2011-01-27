@@ -110,27 +110,50 @@ lib.model = function (_public, _protected, declared_attributes) {
     // This generates a public clone() method on the model.
     _protected.cloneable = function (model_class) {
 
+        // Keep track of original objects and their clones. Because JavaScript coerces
+        // all object keys to be strings, this uses an array of [original, clone] pairs
+        // which needs to be scanned linearly. Oh noes, O(n^2) badness! :(
+        var clone_cache;
+
         function deepClone(thing) {
             if (typeof(thing) !== 'object') {
                 return thing;
-            } else if (_(thing).isArray()) {
+            }
+            if (_(thing).isArray()) {
                 return _(thing).map(deepClone);
-            } else if (typeof(thing.clone) === 'function') {
-                return thing.clone();
+            }
+
+            // 'thing' is an object, but not an array. First try the cache, to resolve circular references.
+            var cached = _(clone_cache).detect(function (pair) {
+                return pair[0] === thing;
+            });
+            if (cached) {
+                return cached[1];
+            }
+
+            // Nothing in the cache. Actually clone the thing.
+            var clone;
+            if (typeof(thing.clone) === 'function') {
+                clone = thing.clone({clone_cache: clone_cache});
             } else {
-                return _(thing).reduce(function (memo, value, key) {
+                clone = _(thing).reduce(function (memo, value, key) {
                     memo[key] = deepClone(value);
                     return memo;
                 }, {});
             }
+
+            clone_cache.push([thing, clone]);
+            return clone;
         }
 
-        _public.clone = function () {
-            var instance = model_class();
+        _public.clone = function (options) {
+            var clone = model_class();
+            clone_cache = options && options.clone_cache || [];
+            clone_cache.push([_public, clone]);
             _(_protected.attributes).each(function (attr, name) {
-                instance[name] = deepClone(attr);
+                clone[name] = deepClone(attr);
             });
-            return instance;
+            return clone;
         };
     };
 

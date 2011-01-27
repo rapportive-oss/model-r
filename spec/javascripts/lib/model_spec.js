@@ -92,6 +92,16 @@ describe("lib.model", function () {
             expect(example_model.object_attr.model.value).toEqual("d");
         });
 
+        it("should cope with circular references", function () {
+            example_model.model_attr.values = [example_model];
+            example_model.object_attr.model.value = example_model;
+            var clone = example_model.clone();
+            expect(clone.model_attr.values[0]).toBe(clone);
+            expect(clone.object_attr.model.value).toBe(clone);
+            var other_clone = example_model.object_attr.model.clone();
+            expect(other_clone.value.object_attr.model).toBe(other_clone);
+        });
+
         it("should not fire the original's event handlers when the clone is modified", function () {
             var changes = 0;
             example_model.onNumberAttrChange(function () {
