@@ -39,3 +39,62 @@ describe("parseTime", function () {
     });
 
 });
+
+describe("relativeTime", function () {
+
+    function from(n) {
+        function date(n) {
+            var obj = new Date();
+            obj.setTime(obj.getTime() - n * 1000);
+            return {ago: obj};
+        }
+
+        return {
+            seconds: date(n),
+            minutes: date(n * 60),
+            hours  : date(n * 60 * 60),
+            days   : date(n * 60 * 60 * 24),
+            weeks  : date(n * 60 * 60 * 24 * 7),
+            months : date(n * 60 * 60 * 24 * 30)
+        };
+    }
+
+    it("should round things to 1 minute", function () {
+        expect($.relativeTime(from(10).seconds.ago)).toEqual('1 min ago');
+        expect($.relativeTime(from(80).seconds.ago)).toEqual('1 min ago');
+    });
+
+    it("should round things to integer minutes", function () {
+        expect($.relativeTime(from(197).seconds.ago)).toEqual('3 mins ago');
+        expect($.relativeTime(from(1877).seconds.ago)).toEqual('31 mins ago');
+    });
+
+    it("should round things to an hour", function () {
+        expect($.relativeTime(from(58 * 60 + 3).seconds.ago)).toEqual('1 hour ago');
+        expect($.relativeTime(from(1069).minutes.ago, from(999).minutes.ago)).toEqual('1 hour ago');
+    });
+
+    it("should round things to integer hours", function () {
+        expect($.relativeTime(from(999).minutes.ago)).toEqual('17 hours ago');
+    });
+
+    it("should round numbers of datys nicely", function () {
+        expect($.relativeTime(from(27).hours.ago)).toEqual('1 day ago');
+        expect($.relativeTime(from(97).hours.ago)).toEqual('4 days ago');
+        expect($.relativeTime(from(6).days.ago)).toEqual('1 week ago');
+        expect($.relativeTime(from(8).days.ago)).toEqual('1 week ago');
+        expect($.relativeTime(from(20).days.ago)).toEqual('3 weeks ago');
+        expect($.relativeTime(from(27).days.ago)).toEqual('4 weeks ago');
+        expect($.relativeTime(from(29).days.ago)).toEqual('1 month ago');
+        expect($.relativeTime(from(48).days.ago)).toEqual('2 months ago');
+        expect($.relativeTime(from(280).days.ago)).toEqual('9 months ago');
+    });
+
+    it("should round numbers of months nicely", function () {
+        expect($.relativeTime(from(6).months.ago)).toEqual('6 months ago');
+        expect($.relativeTime(from(12).months.ago)).toEqual('1 year ago');
+        expect($.relativeTime(from(15).months.ago)).toEqual('1 year ago');
+        expect($.relativeTime(from(19).months.ago)).toEqual('2 years ago');
+    });
+
+});
