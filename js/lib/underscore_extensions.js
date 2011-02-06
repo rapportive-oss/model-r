@@ -50,11 +50,6 @@
         // Escapes special characters for safe concatenation with HTML.
         escapeHTML: function (str) {
             return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        },
-
-        // Escapes special characters for safe use as a literal in a regular expression.
-        escapeRegExp: function (str) {
-            return str.replace(/([.*+?|()\[\]{}])/g, "\\$1");
         }
     });
 }(_));
