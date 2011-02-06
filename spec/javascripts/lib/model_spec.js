@@ -102,6 +102,13 @@ describe("lib.model", function () {
             expect(other_clone.value.object_attr.model).toBe(other_clone);
         });
 
+        it("should cope with tight-loops of circular references", function () {
+            example_model.object_attr.loop = example_model.object_attr;
+            var clone = example_model.clone();
+            expect(clone.object_attr).toNotBe(example_model.object_attr);
+            expect(clone.object_attr).toBe(clone.object_attr.loop);
+        });
+
         it("should not fire the original's event handlers when the clone is modified", function () {
             var changes = 0;
             example_model.onNumberAttrChange(function () {

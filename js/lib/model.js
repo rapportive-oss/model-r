@@ -136,13 +136,13 @@ lib.model = function (_public, _protected, declared_attributes) {
             if (typeof(thing.clone) === 'function') {
                 clone = thing.clone({clone_cache: clone_cache});
             } else {
-                clone = _(thing).reduce(function (memo, value, key) {
-                    memo[key] = deepClone(value);
-                    return memo;
-                }, {});
-            }
+                clone = {};
+                clone_cache.push([thing, clone]);
 
-            clone_cache.push([thing, clone]);
+                _(thing).each(function (attr, name) {
+                    clone[name] = deepClone(attr);
+                });
+            }
             return clone;
         }
 
