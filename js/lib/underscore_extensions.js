@@ -45,11 +45,6 @@
                 replace(/([a-z0-9])([A-Z])/g, '$1_$2').
                 replace(/\-/g, '_').
                 toLowerCase();
-        },
-
-        // Escapes special characters for safe concatenation with HTML.
-        escapeHTML: function (str) {
-            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
     });
 }(_));
