@@ -58,6 +58,13 @@ describe("lib.model", function () {
             expect(clone.object_attr.model.id).toEqual(4);
         });
 
+        it("should cope with null values", function () {
+            example_model.object_attr = null;
+            var clone = example_model.clone();
+            expect(clone.number_attr).toEqual(42);
+            expect(clone.object_attr).toEqual(null);
+        });
+
         it("should make the original and the clone independent of each other", function () {
             var clone = example_model.clone();
             example_model.string_attr = "asdf";

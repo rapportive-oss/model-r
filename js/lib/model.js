@@ -116,7 +116,7 @@ lib.model = function (_public, _protected, declared_attributes) {
         var clone_cache;
 
         function deepClone(thing) {
-            if (typeof(thing) !== 'object') {
+            if (typeof(thing) !== 'object' || thing === null) {
                 return thing;
             }
             if (_(thing).isArray()) {
