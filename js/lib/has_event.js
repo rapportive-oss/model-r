@@ -19,6 +19,10 @@ lib.hasEvent = function (_public, _protected, event_names) {
         _protected.event_handlers[name].push(handler);
     };
 
+    _public.removeHandlers = _public.removeHandlers || function (name) {
+        _protected.event_handlers[name] = [];
+    };
+
     _public.removeHandler = _public.removeHandler || function (name, handler) {
         var handlers = _protected.event_handlers[name];
         if (!handlers) {
