@@ -103,6 +103,8 @@ lib.fillable = function (_public, _protected, spec /*, arguments */) {
 
                 }
             });
+
+            _public.triggerChange(_public);
         };
     }
 
