@@ -57,7 +57,7 @@ lib.model = function (_public, _protected, declared_attributes) {
     _public.attribute = function (name, new_value) {
         if ((typeof(new_value) !== 'undefined') && (new_value !== _protected.attributes[name])) {
             _protected.attributes[name] = new_value;
-            _public.trigger(name + '_change', new_value);
+            _public.transactionalTrigger(name + '_change', new_value);
         }
         return _protected.attributes[name];
     };
@@ -66,14 +66,16 @@ lib.model = function (_public, _protected, declared_attributes) {
     // With one argument (a hash), bulk-assigns the attributes given in the hash, and
     // doesn't modify attributes not mentioned in the hash.
     _public.attributes = function (new_attributes) {
-        if (typeof(new_attributes) !== 'undefined') {
-            for (var attribute in new_attributes) {
-                if (new_attributes.hasOwnProperty(attribute)) {
-                    _public[attribute] = new_attributes[attribute];
+        return _public.transaction(function () {
+            if (typeof(new_attributes) !== 'undefined') {
+                for (var attribute in new_attributes) {
+                    if (new_attributes.hasOwnProperty(attribute)) {
+                        _public[attribute] = new_attributes[attribute];
+                    }
                 }
             }
-        }
-        return _protected.attributes;
+            return _protected.attributes;
+        });
     };
 
     _public.unbuild = function () {
@@ -103,6 +105,44 @@ lib.model = function (_public, _protected, declared_attributes) {
         });
         parent.trigger(attribute + '_change', _public);
         return _public;
+    };
+
+    // Make modifications to the model "atomically". Any listeners will
+    // not get notified until after the modifications are complete.
+    //
+    // This is used by .attributes(), to ensure that when callbacks get
+    // fired, the model is in a consistent state on each callback.
+    //
+    // TODO: We could improve this mechanism to be correctly re-entrant,
+    //       and also to de-dupe the top-level .onChange.
+    _public.transaction = function (func) {
+        if (!_protected.transaction_queue) {
+            _protected.transaction_queue = [];
+        }
+        var ret = func();
+
+        _(_protected.transaction_queue).each(function (func) {
+            func.call();
+        });
+
+        _protected.transaction_queue = null;
+        return ret;
+    };
+
+    // Like .trigger(), but if there are transactions in process,
+    // defer the triggering until after it completes.
+    _public.transactionalTrigger = function () {
+        var thiz =  this,
+            args = arguments;
+
+        if (_protected.transaction_queue) {
+            _protected.transaction_queue.push(function () {
+                _public.trigger.apply(thiz, args);
+            });
+        } else {
+            _public.trigger.apply(thiz, args);
+
+        }
     };
 
     // If a model wants to support deep cloning, it can call cloneable, passing the

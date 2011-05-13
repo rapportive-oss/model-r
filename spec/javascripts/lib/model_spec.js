@@ -1,4 +1,49 @@
 describe("lib.model", function () {
+    describe("attributes", function () {
+        function consistentModel() {
+            var _public = {}, _protected = {};
+            lib.model(_public, _protected, "number", "string");
+            return _public;
+        }
+
+        it("should update all attributes", function () {
+            var a = consistentModel();
+            a.attributes({number: 1, string: '1'});
+            expect(a.number).toEqual(1);
+            expect(a.string).toEqual('1');
+        });
+
+        it("should fire change events for all attributes", function () {
+            var a = consistentModel(), number, string;
+            a.onNumberChange(function (n) {
+                number = n;
+            });
+            a.onStringChange(function (s) {
+                string = s;
+            });
+            a.attributes({number: 1, string: '1'});
+            expect(number).toEqual(1);
+            expect(string).toEqual('1');
+        });
+
+        it("should wait until all attributes have been updated before firing events", function () {
+            var a = consistentModel(), number, string;
+            a.onNumberChange(function () {
+                expect(a.number.toString()).toEqual(a.string);
+            });
+
+            a.onStringChange(function () {
+                expect(a.number.toString()).toEqual(a.string);
+            });
+
+            a.onChange(function () {
+                expect(a.number.toString()).toEqual(a.string);
+            });
+
+            a.attributes({number: 1, string: '1'});
+        });
+    });
+
     describe("cloneable", function () {
 
         var instance_number, example_model;
