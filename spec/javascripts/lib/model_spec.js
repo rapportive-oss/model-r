@@ -1,5 +1,5 @@
 /*jslint nomen: false */
-/*global describe, it, expect, beforeEach, lib, _ */
+/*global describe, it, expect, beforeEach, lib, _, jQuery */
 describe("lib.model", function () {
     describe("attributes", function () {
         function consistentModel() {
@@ -184,6 +184,63 @@ describe("lib.model", function () {
             expect(changes).toEqual(0);
             clone.number_attr = 12345678;
             expect(changes).toEqual(1);
+        });
+    });
+
+    describe("lib.model.object_fields", function () {
+        function objectModel() {
+            var _public = {}, _protected = {};
+            lib.model.object_fields(_public, _protected, "numbers");
+            return _public;
+        }
+        it("should fire event handlers when a value is replaced by another", function () {
+            var ns = [],
+                model = objectModel();
+        
+            model.onNumbersChange(function (new_ns) {
+                ns.push(new_ns);
+            });
+
+            model.numbers = [1, 2];
+            model.numbers = [1, 2, 3];
+            expect(ns).toEqual([[1, 2], [1, 2, 3]]);
+        });
+
+        it("should not fire event handlers when an object is replaced by a similar one", function () {
+            var ns = [],
+                model = objectModel();
+            model.onNumbersChange(function (new_ns) {
+                ns.push(new_ns);
+            });
+            model.numbers = [1, 2, 3];
+            model.numbers = [1, 2, 3];
+            expect(ns).toEqual([[1, 2, 3]]);
+        });
+
+        it("should debounce similar jQuery objects", function () {
+            var ns = [],
+                model = objectModel(),
+                init = jQuery("p");
+            model.onNumbersChange(function (new_ns) {
+                ns.push(new_ns);
+            });
+            model.numbers = init;
+            model.numbers = jQuery("p");
+            expect(ns).toEqual([init]);
+        });
+
+        it("should not debounce different jQuery objects", function () {
+            var ns = [],
+                model = objectModel(),
+                before, after;
+
+            model.onNumbersChange(function (new_ns) {
+                ns.push(new_ns);
+            });
+            model.numbers = before = jQuery("p");
+            jQuery("body").append("<p>");
+            model.numbers = after = jQuery("p");
+            expect(ns).toEqual([before, after]);
         });
     });
 });
