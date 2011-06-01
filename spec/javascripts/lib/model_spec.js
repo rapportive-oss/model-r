@@ -1,3 +1,5 @@
+/*jslint nomen: false */
+/*global describe, it, expect, beforeEach, lib, _ */
 describe("lib.model", function () {
     describe("attributes", function () {
         function consistentModel() {
@@ -79,7 +81,7 @@ describe("lib.model", function () {
             example_model.number_attr = 42;
             example_model.string_attr = "hello";
             example_model.model_attr = uncloneable(1, "a");
-            example_model.array_attr = ["abc", [subModel(2, "b")], {obj: subModel(3, "c")}]
+            example_model.array_attr = ["abc", [subModel(2, "b")], {obj: subModel(3, "c")}];
             example_model.object_attr = {number: 123, string: "string", model: subModel(4, "d")};
         });
 
@@ -147,10 +149,10 @@ describe("lib.model", function () {
         it("should cope with circular references", function () {
             example_model.model_attr.values = [example_model];
             example_model.object_attr.model.value = example_model;
-            var clone = example_model.clone();
+            var clone = example_model.clone(),
+                other_clone = example_model.object_attr.model.clone();
             expect(clone.model_attr.values[0]).toBe(clone);
             expect(clone.object_attr.model.value).toBe(clone);
-            var other_clone = example_model.object_attr.model.clone();
             expect(other_clone.value.object_attr.model).toBe(other_clone);
         });
 
@@ -162,11 +164,11 @@ describe("lib.model", function () {
         });
 
         it("should not fire the original's event handlers when the clone is modified", function () {
-            var changes = 0;
+            var changes = 0, clone;
             example_model.onNumberAttrChange(function () {
                 changes += 1;
             });
-            var clone = example_model.clone();
+            clone = example_model.clone();
             clone.number_attr = 12345678;
             expect(changes).toEqual(0);
             example_model.number_attr = 12345678;
