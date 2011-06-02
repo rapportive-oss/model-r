@@ -45,6 +45,12 @@
                 replace(/([a-z0-9])([A-Z])/g, '$1_$2').
                 replace(/\-/g, '_').
                 toLowerCase();
+        },
+
+        // Escapes a string for inclusion into a regular expression.
+        // cf. http://simonwillison.net/2006/Jan/20/escape/
+        regexpEscape: function (str) {
+            return str.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
         }
     });
 }(_));
