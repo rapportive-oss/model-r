@@ -36,7 +36,7 @@
 
 /*jslint nomen: false */
 /*global lib, _ */
-lib.fillable = function (_public, _protected, spec /*, arguments */) {
+lib.fillable = function (_public, _protected, spec) {
 
     var remaining_arguments = _.toArray(arguments).slice(3);
 
@@ -86,7 +86,7 @@ lib.fillable = function (_public, _protected, spec /*, arguments */) {
                 var filler = _public[name] && (_public[name].refill || _public[name].attributes);
 
                 // Something model-like, let's re-fill the existing object.
-                if (typeof filler === 'function') {
+                if (_.isFunction(filler)) {
                     filler.call(_public[name], value);
 
                 // Nothing model-like present already, try making something new.
