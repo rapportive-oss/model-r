@@ -98,6 +98,21 @@ describe("lib.hasEvent", function () {
             obj.onBar(bar_handler);
         });
 
+        describe("removeHandlers(name)", function () {
+            it("should remove all handlers for the given event name", function () {
+                obj.removeHandlers("foo");
+                obj.triggerFoo();
+                expect(foo_handler_1).not.toHaveBeenCalled();
+                expect(foo_handler_2).not.toHaveBeenCalled();
+            });
+
+            it("should not affect handlers for other events", function () {
+                obj.removeHandlers("foo");
+                obj.triggerBar();
+                expect(bar_handler).toHaveBeenCalled();
+            });
+        });
+
         describe("removeHandler(name, handler)", function () {
             it("should remove the handler with the given name and function object", function () {
                 obj.removeHandler("foo", foo_handler_1);
