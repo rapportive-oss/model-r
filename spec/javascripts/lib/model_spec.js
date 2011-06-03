@@ -79,7 +79,7 @@ describe("lib.model", function () {
             example_model.number_attr = 42;
             example_model.string_attr = "hello";
             example_model.model_attr = uncloneable(1, "a");
-            example_model.array_attr = ["abc", [subModel(2, "b")], {obj: subModel(3, "c")}]
+            example_model.array_attr = ["abc", [subModel(2, "b")], {obj: subModel(3, "c")}];
             example_model.object_attr = {number: 123, string: "string", model: subModel(4, "d")};
         });
 
