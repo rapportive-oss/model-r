@@ -81,30 +81,32 @@ lib.fillable = function (_public, _protected, spec) {
         lib.model(_public, _protected, _(spec).keys());
 
         _public.refill = function (attributes) {
-            _(attributes).each(function (value, name) {
+            return _public.transaction(function () {
+                _(attributes).each(function (value, name) {
 
-                var filler = _public[name] && (_public[name].refill || _public[name].attributes);
+                    var filler = _public[name] && (_public[name].refill || _public[name].attributes);
 
-                // Something model-like, let's re-fill the existing object.
-                if (_.isFunction(filler)) {
-                    filler.call(_public[name], value);
+                    // Something model-like, let's re-fill the existing object.
+                    if (_.isFunction(filler)) {
+                        filler.call(_public[name], value);
 
-                // Nothing model-like present already, try making something new.
-                } else if (_.isFunction(spec[name])) {
-                    _public[name] = spec[name].apply(this, remaining_arguments.concat(value));
+                    // Nothing model-like present already, try making something new.
+                    } else if (_.isFunction(spec[name])) {
+                        _public[name] = spec[name].apply(this, remaining_arguments.concat(value));
 
-                // or lots of new things
-                } else if (_.isArray(spec[name]) && _.isFunction(spec[name][0])) {
-                    _public[name] = mergeSetOfObjects(_public[name], value, spec[name][0]);
+                    // or lots of new things
+                    } else if (_.isArray(spec[name]) && _.isFunction(spec[name][0])) {
+                        _public[name] = mergeSetOfObjects(_public[name], value, spec[name][0]);
 
-                // Otherwise, just assign the value.
-                } else if (typeof value !== 'undefined') {
-                    _public[name] = value;
+                    // Otherwise, just assign the value.
+                    } else if (typeof value !== 'undefined') {
+                        _public[name] = value;
 
-                }
+                    }
+                });
+
+                _public.triggerChange(_public);
             });
-
-            _public.triggerChange(_public);
         };
     }
 
