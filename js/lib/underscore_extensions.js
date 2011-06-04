@@ -51,6 +51,11 @@
         // cf. http://simonwillison.net/2006/Jan/20/escape/
         regexpEscape: function (str) {
             return str.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+        },
+
+        // The opposite of Empty
+        isPresent: function () {
+            return !_.isEmpty.apply(this, arguments);
         }
     });
 }(_));
