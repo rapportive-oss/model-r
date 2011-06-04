@@ -61,7 +61,7 @@ lib.fillable = function (_public, _protected, spec) {
         });
     }
 
-    // If constructable is called with arguments like lib.model, then we
+    // If fillable is called with arguments like lib.model, then we
     // use .attributes as .refill, assuming all attributes are supposed to
     // be un-endowed objects.
     if (!spec || _.isArray(spec) || typeof(spec) === 'string') {
