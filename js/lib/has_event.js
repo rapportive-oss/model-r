@@ -17,6 +17,7 @@ lib.hasEvent = function (_public, _protected, event_names) {
     _public.on = _public.on || function (name, handler) {
         _protected.event_handlers[name] = _protected.event_handlers[name] || [];
         _protected.event_handlers[name].push(handler);
+        return _public;
     };
 
     _public.removeHandlers = _public.removeHandlers || function (name) {
@@ -44,6 +45,8 @@ lib.hasEvent = function (_public, _protected, event_names) {
                 handler.apply(that, args);
             });
         }
+
+        return _public;
     };
 
     // Allow either lib.hasEvent(_p, _p, ['a', 'b', 'c']),
@@ -59,6 +62,7 @@ lib.hasEvent = function (_public, _protected, event_names) {
         // Register a new event handler for this specific event.
         _public['on' + _(event_name).camelize()] = function (handler) {
             _protected.event_handlers[event_name].push(handler);
+            return _public;
         };
 
         // Trigger the event handlers for this specific event.
@@ -67,6 +71,7 @@ lib.hasEvent = function (_public, _protected, event_names) {
             _(_protected.event_handlers[event_name]).each(function (handler) {
                 handler.apply(that, args);
             });
+            return _public;
         };
     });
 };
