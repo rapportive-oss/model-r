@@ -51,6 +51,38 @@
         // cf. http://simonwillison.net/2006/Jan/20/escape/
         regexpEscape: function (str) {
             return str.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+        },
+
+        // Returns a list of items such that the given function
+        // returns a unique value for each of them.
+        //
+        // If you know in advance that all duplicate values are
+        // adjacent to each other, you can pass isSorted to use
+        // a much faster algorithm.
+        //
+        // The fourth parameter is used as the  as with _.map
+        // when the provided function is called, while the
+        uniqBy: function (ary, func, isSorted, context) {
+            var seen = [],
+                uniq = [];
+            _.each(ary, function (el, i) {
+                var key = func.call(context, el, i, ary);
+                if (0 === i || (isSorted === true ? _.last(seen) !== key : !_.include(seen, key))) {
+                    seen.push(key);
+                    uniq.push(el);
+                }
+            });
+            return uniq;
+        },
+
+        // A function that, given an element, returns a property.
+        //   _([{1:2}, {1:3}]).map(_.plucker(1)) === [2, 3]
+        // (Though you could use _.pluck in that case).
+        //
+        plucker: function (key) {
+            return function (el) {
+                return el[key];
+            };
         }
     });
 }(_));
