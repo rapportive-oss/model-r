@@ -15,6 +15,9 @@ lib.hasEvent = function (_public, _protected, event_names) {
 
     // Register a new event handler for an arbitrary event name.
     _public.on = _public.on || function (name, handler) {
+        if (!_.isFunction(handler)) {
+            throw new TypeError("Tried to bind " + name + " with non-function:" + String(handler));
+        }
         _protected.event_handlers[name] = _protected.event_handlers[name] || [];
         _protected.event_handlers[name].push(handler);
         return _public;
@@ -61,8 +64,7 @@ lib.hasEvent = function (_public, _protected, event_names) {
 
         // Register a new event handler for this specific event.
         _public['on' + _(event_name).camelize()] = function (handler) {
-            _protected.event_handlers[event_name].push(handler);
-            return _public;
+            return _public.on(event_name, handler);
         };
 
         // Trigger the event handlers for this specific event.
