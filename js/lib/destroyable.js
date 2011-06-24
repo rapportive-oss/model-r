@@ -20,4 +20,11 @@ lib.destroyable = function (_public, _protected) {
             object[(object.jquery ? 'unbind' : 'removeHandler')](event_name, handler);
         });
     };
+
+    // Create a destroyable sub-component that will be destroyed when the current component
+    // is destroyed.
+    _public.chainedDestroyable = function (destroyable) {
+        _public.onDestroy(destroyable.triggerDestroy);
+        return destroyable;
+    };
 };
