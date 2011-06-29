@@ -46,6 +46,84 @@ describe("lib.model", function () {
         });
     });
 
+
+    describe("whenEqual", function () {
+        function lunch(what_to_eat) {
+            var _public = {}, _protected = {};
+            lib.model(_public, _protected, "noms");
+            _public.noms = what_to_eat;
+            return _public;
+        }
+
+        it("should call the callback immediately if the attribute currently has the right value", function () {
+            var happy_me = jasmine.createSpy();
+            var today = lunch("bagels");
+            today.whenEqual("noms", "bagels", happy_me);
+            expect(happy_me.callCount).toEqual(1);
+        });
+
+        it("should not call the callback twice if the value is unset and set again", function () {
+            var happy_me = jasmine.createSpy();
+            var today = lunch("bagels");
+            today.whenEqual("noms", "bagels", happy_me);
+            today.noms = "petit fours";
+            today.noms = "bagels";
+            expect(happy_me.callCount).toEqual(1);
+        });
+
+        it("should delay the callback until the right value is set", function () {
+            var happy_me = jasmine.createSpy();
+            var today = lunch("pizza");
+            today.whenEqual("noms", "bagels", happy_me);
+            expect(happy_me.callCount).toEqual(0);
+            today.noms = "bagels";
+            expect(happy_me.callCount).toEqual(1);
+        });
+
+        it("should not call the callback multiple times on repeated assignment", function () {
+            var happy_me = jasmine.createSpy();
+            var today = lunch("pizza");
+            today.whenEqual("noms", "bagels", happy_me);
+            today.noms = "bagels";
+            today.noms = "tequila";
+            today.noms = "bagels";
+            today.noms = "concrete slabs";
+            expect(happy_me.callCount).toEqual(1);
+        });
+    });
+
+
+    describe("wheneverEqual", function () {
+        function weather(sun) {
+            var _public = {}, _protected = {};
+            lib.model(_public, _protected, "sun");
+            _public.sun = sun;
+            return _public;
+        }
+
+        it("should call the callback immediately when the attribute currently has the right value", function () {
+            var happy_me = jasmine.createSpy();
+            var today = weather("shining");
+            today.wheneverEqual("sun", "shining", happy_me);
+            expect(happy_me.callCount).toEqual(1);
+        });
+
+        it("should call the callback whenever the right value is assigned", function () {
+            var happy_me = jasmine.createSpy();
+            var today = weather("clouded up");
+            today.wheneverEqual("sun", "shining", happy_me);
+            expect(happy_me.callCount).toEqual(0);
+            today.sun = "shining";
+            expect(happy_me.callCount).toEqual(1);
+            today.sun = "eclipse";
+            expect(happy_me.callCount).toEqual(1);
+            today.sun = "shining";
+            expect(happy_me.callCount).toEqual(2);
+            today.sun = "behind a concrete wall";
+            expect(happy_me.callCount).toEqual(2);
+        });
+    });
+
     describe("cloneable", function () {
 
         var instance_number, example_model;

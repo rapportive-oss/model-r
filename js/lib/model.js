@@ -107,6 +107,45 @@ lib.model = function (_public, _protected, declared_attributes) {
         return _public;
     };
 
+    // If the attribute with name `name` currently has a value of `expected_value`, calls the
+    // callback immediately; otherwise waits until the attribute is set to that value, and then
+    // calls the callback once. Doesn't call the callback more than once.
+    _public.whenEqual = function (name, expected_value, callback) {
+        if (_public[name] === expected_value) {
+            callback();
+        } else {
+            _protected.when_equal = _protected.when_equal || {};
+            if (_protected.when_equal[name]) {
+                _protected.when_equal[name].push({expected_value: expected_value, callback: callback});
+            } else {
+                _protected.when_equal[name] = [{expected_value: expected_value, callback: callback}];
+
+                _public.on(name + '_change', function (new_value) {
+                    _protected.when_equal[name] = _(_protected.when_equal[name]).reject(function (item) {
+                        if (item.expected_value === new_value) {
+                            item.callback();
+                            return true;
+                        }
+                    });
+                });
+            }
+        }
+    };
+
+    // If the attribute with name `name` currently has a value of `expected_value`, calls the
+    // callback immediately. Whenever in future the attribute is changed from something else to
+    // `expected_value`, the callback is called again.
+    _public.wheneverEqual = function (name, expected_value, callback) {
+        if (_public[name] === expected_value) {
+            callback();
+        }
+        _public.on(name + '_change', function (new_value) {
+            if (new_value === expected_value) {
+                callback();
+            }
+        });
+    };
+
     // Make modifications to the model "atomically". Any listeners will
     // not get notified until after the modifications are complete.
     //
