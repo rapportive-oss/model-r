@@ -9,8 +9,8 @@ lib.model = function (_public, _protected, declared_attributes) {
     _protected.attributes = _protected.attributes || {};
 
     // Event methods:
-    // onChange(function (attribute_name, new_value) { ... }) and
-    // triggerChange(attribute_name, new_value)
+    // onChange(function () { ... }) and
+    // triggerChange()
     lib.hasEvent(_public, _protected, 'change');
 
     // Allow either lib.model(_p, _p, ['a','b','c']);
@@ -29,7 +29,7 @@ lib.model = function (_public, _protected, declared_attributes) {
         var change_event_name = name + '_change';
         lib.hasEvent(_public, _protected, change_event_name);
         _public.on(change_event_name, function (new_value) {
-            _public.triggerChange(name, new_value);
+            _public.triggerChange();
         });
 
         // Define getter/setter for the attribute.
