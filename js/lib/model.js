@@ -29,7 +29,7 @@ lib.model = function (_public, _protected, declared_attributes) {
         var change_event_name = name + '_change';
         lib.hasEvent(_public, _protected, change_event_name);
         _public.on(change_event_name, function (new_value) {
-            _public.triggerChange();
+            _public.transactionalTrigger('change');
         });
 
         // Define getter/setter for the attribute.
@@ -113,8 +113,7 @@ lib.model = function (_public, _protected, declared_attributes) {
     // This is used by .attributes(), to ensure that when callbacks get
     // fired, the model is in a consistent state on each callback.
     //
-    // TODO: We could improve this mechanism to be correctly re-entrant,
-    //       and also to de-dupe the top-level .onChange.
+    // TODO: We could improve this mechanism to be correctly re-entrant.
     _public.transaction = function (func) {
         if (!_protected.transaction_queue) {
             _protected.transaction_queue = [];
@@ -129,6 +128,14 @@ lib.model = function (_public, _protected, declared_attributes) {
         }
 
         _protected.transaction_queue = null;
+
+        // This happens outside of the transaction so that we can guarantee it happens
+        // once (and only once) per transaction. (Otherwise we'd have to run this multiple
+        // times in the same transaction if the onChange handlers also triggered changes).
+        if (_protected.transaction_triggered_change) {
+            _protected.transaction_triggered_change = false;
+            _public.triggerChange();
+        }
         return ret;
     };
 
@@ -139,9 +146,15 @@ lib.model = function (_public, _protected, declared_attributes) {
             args = arguments;
 
         if (_protected.transaction_queue) {
-            _protected.transaction_queue.push(function () {
-                _public.trigger.apply(thiz, args);
-            });
+            // We want to debounce the onChange handler within a transaction, though
+            // we don't want to debounce other on*Change events.
+            if (args[0] === 'change') {
+                _protected.transaction_triggered_change = true;
+            } else {
+                _protected.transaction_queue.push(function () {
+                    _public.trigger.apply(thiz, args);
+                });
+            }
         } else {
             _public.trigger.apply(thiz, args);
 

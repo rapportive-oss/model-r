@@ -57,6 +57,33 @@ describe("lib.model", function () {
             a.attributes({string: '42'});
             expect(number).toEqual(42);
         });
+
+        it("may call onAttributeChange more than once per transaction if necesssary", function () {
+            var a = consistentModel(), numbers = [];
+            a.onStringChange(function (s) {
+                a.number = parseInt(s, 10);
+            });
+            a.onNumberChange(function (n) {
+                numbers.push(n);
+            });
+
+            a.attributes({number: 8, string: '42'});
+            expect(numbers).toEqual([8, 42]);
+
+        });
+
+        it("should trigger onChange once per transaction", function () {
+            var a = consistentModel(), callcount = 0;
+            a.onStringChange(function (s) {
+                a.number = parseInt(s, 10);
+            });
+            a.onChange(function (s) {
+                callcount += 1;
+            });
+
+            a.attributes({string: '42', number: 8});
+            expect(callcount).toEqual(1);
+        });
     });
 
     describe("cloneable", function () {
