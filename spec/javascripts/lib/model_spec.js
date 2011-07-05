@@ -44,6 +44,19 @@ describe("lib.model", function () {
 
             a.attributes({number: 1, string: '1'});
         });
+
+        it("should fire events for changes that happen in change handlers of transactions", function () {
+            var a = consistentModel(), number, string;
+            a.onStringChange(function (s) {
+                a.number = parseInt(s, 10);
+            });
+            a.onNumberChange(function (n) {
+                number = n;
+            });
+
+            a.attributes({string: '42'});
+            expect(number).toEqual(42);
+        });
     });
 
     describe("cloneable", function () {

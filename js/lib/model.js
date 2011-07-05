@@ -121,9 +121,12 @@ lib.model = function (_public, _protected, declared_attributes) {
         }
         var ret = func();
 
-        _(_protected.transaction_queue).each(function (func) {
-            func.call();
-        });
+        while (_protected.transaction_queue.length) {
+            // .splice(0) takes a copy of the contents of the array
+            // and empties the array. If anything else does a transactionalTrigger
+            // within these callbacks, it'll be added to the emptied _protected.transaction_queue.
+            _(_protected.transaction_queue.splice(0)).invoke('call');
+        }
 
         _protected.transaction_queue = null;
         return ret;
