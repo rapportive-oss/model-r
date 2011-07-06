@@ -90,6 +90,37 @@ describe("lib.model", function () {
             today.noms = "concrete slabs";
             expect(happy_me.callCount).toEqual(1);
         });
+
+        it("should let me register multiple callbacks on the same property", function () {
+            var happy_me = jasmine.createSpy();
+            var less_happy = jasmine.createSpy();
+            var today = lunch("sandwich");
+            today.whenEqual("noms", "bagels", happy_me);
+            today.whenEqual("noms", "cake", happy_me);
+            today.whenEqual("noms", "sandwich", less_happy);
+            expect(less_happy.callCount).toEqual(1); // I'm less happy because it was sandwiches today
+            expect(happy_me.callCount).toEqual(0);
+            today.noms = "bagels"; // w00t!
+            expect(less_happy.callCount).toEqual(1);
+            expect(happy_me.callCount).toEqual(1); // nomnom
+            today.noms = "cake";
+            expect(less_happy.callCount).toEqual(1);
+            expect(happy_me.callCount).toEqual(2); // epic noms
+            today.noms = "sandwich"; // shouldn't change anything
+            expect(less_happy.callCount).toEqual(1);
+            expect(happy_me.callCount).toEqual(2);
+        });
+
+        it ("should let me have multiple callbacks on same property value", function () {
+            var happy_me = jasmine.createSpy();
+            var sad_me = jasmine.createSpy();
+            var schizophrenia = lunch("everything");
+            schizophrenia.whenEqual("noms", "everything", happy_me);
+            schizophrenia.whenEqual("noms", "everything", sad_me);
+            schizophrenia.whenEqual("noms", "bagels", happy_me);
+            expect(happy_me.callCount).toEqual(1);
+            expect(sad_me.callCount).toEqual(1);
+        });
     });
 
 
