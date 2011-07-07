@@ -130,6 +130,7 @@ lib.model = function (_public, _protected, declared_attributes) {
                 });
             }
         }
+        return _public;
     };
 
     // If the attribute with name `name` currently has a value of `expected_value`, calls the
@@ -139,7 +140,7 @@ lib.model = function (_public, _protected, declared_attributes) {
         if (_public[name] === expected_value) {
             callback();
         }
-        _public.on(name + '_change', function (new_value) {
+        return _public.on(name + '_change', function (new_value) {
             if (new_value === expected_value) {
                 callback();
             }
