@@ -83,6 +83,18 @@
             return function (el) {
                 return el[key];
             };
+        },
+
+        // Return the first truthy output of the iterator when
+        // passed over the array.
+        // (equivalent to .map().compact().first(), though more efficient).
+        firstMap: function (obj, iterator, context) {
+            var result;
+            _.any(obj, function (value, index, list) {
+                result = iterator.call(context, value, index, list);
+                return !!result;
+            });
+            return result;
         }
     });
 }(_));
