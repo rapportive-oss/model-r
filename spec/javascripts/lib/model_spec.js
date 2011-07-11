@@ -161,6 +161,24 @@ describe("lib.model", function () {
             expect(happy_me.callCount).toEqual(1);
             expect(sad_me.callCount).toEqual(1);
         });
+
+        it("should call the callbacks with this set correctly", function () {
+            var today = lunch("burittos");
+            today.whenEqual("noms", "burittos", function () {
+                expect(this).toBe(today);
+            });
+            today.wheneverEqual("noms", "burittos", function () {
+                expect(this).toBe(today);
+            });
+            today.whenEqual("noms", "tortillas", function () {
+                expect(this).toBe(today);
+            });
+            today.wheneverEqual("noms", "tortillas", function () {
+                expect(this).toBe(today);
+            });
+            today.noms = "tortillas";
+            today.noms = "burrittos";
+        });
     });
 
 

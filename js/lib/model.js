@@ -112,7 +112,7 @@ lib.model = function (_public, _protected, declared_attributes) {
     // calls the callback once. Doesn't call the callback more than once.
     _public.whenEqual = function (name, expected_value, callback) {
         if (_public[name] === expected_value) {
-            callback();
+            callback.call(_public);
         } else {
             _protected.when_equal = _protected.when_equal || {};
             if (_protected.when_equal[name]) {
@@ -123,7 +123,7 @@ lib.model = function (_public, _protected, declared_attributes) {
                 _public.on(name + '_change', function (new_value) {
                     _protected.when_equal[name] = _(_protected.when_equal[name]).reject(function (item) {
                         if (item.expected_value === new_value) {
-                            item.callback();
+                            item.callback.call(_public);
                             return true;
                         }
                     });
@@ -138,11 +138,11 @@ lib.model = function (_public, _protected, declared_attributes) {
     // `expected_value`, the callback is called again.
     _public.wheneverEqual = function (name, expected_value, callback) {
         if (_public[name] === expected_value) {
-            callback();
+            callback.call(_public);
         }
         return _public.on(name + '_change', function (new_value) {
             if (new_value === expected_value) {
-                callback();
+                callback.call(_public);
             }
         });
     };
