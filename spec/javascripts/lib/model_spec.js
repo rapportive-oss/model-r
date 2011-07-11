@@ -1,5 +1,5 @@
-/*jslint nomen: false */
-/*global describe, it, expect, beforeEach, lib, _, jQuery */
+/*jslint nomen: false, onevar: false */
+/*global describe, it, expect, beforeEach, lib, _, jQuery, jasmine */
 describe("lib.model", function () {
     describe("attributes", function () {
         function consistentModel() {
@@ -151,7 +151,7 @@ describe("lib.model", function () {
             expect(happy_me.callCount).toEqual(2);
         });
 
-        it ("should let me have multiple callbacks on same property value", function () {
+        it("should let me have multiple callbacks on same property value", function () {
             var happy_me = jasmine.createSpy();
             var sad_me = jasmine.createSpy();
             var schizophrenia = lunch("everything");
