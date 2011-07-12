@@ -9,6 +9,21 @@ describe("_.", function () {
         });
     });
 
+    describe("chomp", function () {
+        it("should work without specifying a separator", function () {
+            expect(_("foo").chomp()).toBe("foo");
+            expect(_("foo ").chomp()).toBe("foo");
+            expect(_("foo\r").chomp()).toBe("foo");
+            expect(_("foo\r\n").chomp()).toBe("foo");
+            expect(_("foo   ").chomp()).toBe("foo");
+            expect(_("  foobar! ").chomp()).toBe("  foobar!");
+        });
+
+        it("should work with a customer separator", function () {
+            expect(_("whatever.com>").chomp('>')).toBe('whatever.com');
+        });
+    });
+
     describe("uniqBy", function () {
 
         it("should make things uniq", function () {
