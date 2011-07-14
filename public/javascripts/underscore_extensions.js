@@ -12,6 +12,16 @@
             return {};
         },
 
+        // chomp() similar to ruby: Returns a new String with the given record
+        // separator removed from the end of input (if present). Defaults to
+        // removing spaces, newlines and carriage returns.
+        chomp: function (input, separator) {
+            if (!separator) {
+                separator = "[\r\n ]";
+            }
+            return input.replace(new RegExp(separator + '+$'), '');
+        },
+
         // Find the (asymetric) difference between the two arrays.
         // _.difference([1,2,3], [2,3]) === _.without([1,2,3], 2, 3)
         difference: function (ary1, ary2) {
