@@ -19,7 +19,7 @@ describe("_.", function () {
             expect(_("  foobar! ").chomp()).toBe("  foobar!");
         });
 
-        it("should work with a customer separator", function () {
+        it("should work with a custom separator", function () {
             expect(_("whatever.com>").chomp('>')).toBe('whatever.com');
         });
     });
