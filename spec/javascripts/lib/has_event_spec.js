@@ -149,5 +149,22 @@ describe("lib.hasEvent", function () {
                 expect(foo_handler_1).toHaveBeenCalled();
             });
         });
+
+        describe("onceOn", function () {
+            it("should be triggered", function () {
+                foo_handler_1 = jasmine.createSpy('foo handler 1');
+                obj.onceOn('foo', foo_handler_1);
+                obj.triggerFoo(1);
+                expect(foo_handler_1).toHaveBeenCalledWith(1);
+            });
+            it("should not be triggered twice", function () {
+                foo_handler_1 = jasmine.createSpy('foo handler 1');
+                obj.onceOn('foo', foo_handler_1);
+                obj.triggerFoo(1);
+                obj.triggerFoo(2);
+                expect(foo_handler_1).toHaveBeenCalledWith(1);
+                expect(foo_handler_1).not.toHaveBeenCalledWith(2);
+            });
+        });
     });
 });

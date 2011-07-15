@@ -23,6 +23,18 @@ lib.hasEvent = function (_public, _protected, event_names) {
         return _public;
     };
 
+    _public.onceOn = _public.onceOn || function (name, handler) {
+        if (!_.isFunction(handler)) {
+            throw new TypeError("Tried to bind " + name + " with non-function:" + String(handler));
+        }
+
+        function onceHandler() {
+            _public.removeHandler(name, onceHandler);
+            return handler.apply(this, arguments);
+        }
+        return _public.on(name, onceHandler);
+    };
+
     _public.removeHandlers = _public.removeHandlers || function (name) {
         _protected.event_handlers[name] = [];
     };
