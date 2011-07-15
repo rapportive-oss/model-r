@@ -1,3 +1,5 @@
+/*jslint nomen: false*/
+/*global describe,it,expect,beforeEach,jasmine,lib*/
 describe("lib.hasEvent", function () {
     describe("mixin constructor", function () {
         it("should accept a list of event names", function () {
@@ -58,8 +60,14 @@ describe("lib.hasEvent", function () {
 
         it("should call multiple handlers in the order they were registered", function () {
             var count = 0, last = 0;
-            obj.onFoo(function () { count += 1; last = 1; });
-            obj.onFoo(function () { count += 1; last = 2; });
+            obj.onFoo(function () {
+                count += 1;
+                last = 1;
+            });
+            obj.onFoo(function () {
+                count += 1;
+                last = 2;
+            });
             obj.triggerFoo();
             expect(count).toEqual(2);
             expect(last).toEqual(2);
