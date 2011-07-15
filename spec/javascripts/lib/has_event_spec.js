@@ -86,6 +86,17 @@ describe("lib.hasEvent", function () {
             });
             obj.triggerFoo();
         });
+
+        it("should still ping all event handlers if one is removed", function () {
+            var foo_handler_1 = jasmine.createSpy('foo handler 1'),
+                foo_handler_2 = jasmine.createSpy('foo handler 2');
+
+            obj.onceOn('foo', foo_handler_1);
+            obj.on('foo', foo_handler_2);
+            obj.triggerFoo();
+            expect(foo_handler_1).toHaveBeenCalled();
+            expect(foo_handler_2).toHaveBeenCalled();
+        });
     });
 
 
