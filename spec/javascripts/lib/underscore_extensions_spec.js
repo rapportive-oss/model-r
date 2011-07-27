@@ -24,6 +24,14 @@ describe("_.", function () {
         });
     });
 
+    describe("squeeze", function () {
+        it("should remove multiple consecutive instances of the specified string", function () {
+            expect(_("foobarfoo").squeeze('o')).toBe("fobarfo");
+            expect(_("hello  world").squeeze(' ')).toBe('hello world');
+            expect(_("hell o  world").squeeze(' ')).toBe('hell o world');
+        });
+    });
+
     describe("uniqBy", function () {
 
         it("should make things uniq", function () {

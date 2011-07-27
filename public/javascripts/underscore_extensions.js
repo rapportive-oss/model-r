@@ -22,6 +22,15 @@
             return input.replace(new RegExp(separator + '+$'), '');
         },
 
+        // Returns a new string where runs of the same character that occur in
+        // this set are replaced by a single character.
+        squeeze: function (input, other_string) {
+            if (!other_string) {
+                throw "squeeze() without a specific string to squeeze, is not supported.";
+            }
+            return input.replace(new RegExp("(" + other_string + ")+", 'g'), other_string);
+        },
+
         // Find the (asymetric) difference between the two arrays.
         // _.difference([1,2,3], [2,3]) === _.without([1,2,3], 2, 3)
         difference: function (ary1, ary2) {
