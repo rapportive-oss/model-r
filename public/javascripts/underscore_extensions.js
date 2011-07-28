@@ -114,6 +114,53 @@
                 return !!result;
             });
             return result;
+        },
+
+        // Returns a 2-item array of the first and last names if they can be determined from
+        // the input.
+        first_and_last: function (input) {
+            if (!input) {
+                return ['', ''];
+            }
+            var name = _(input).squeeze(' ').trim(),
+                words;
+
+            if (!name || name.match(/[0-9"\|\*\?\(\)\[\]<>_@~&]/) || name.length > 20) {
+                return ['', ''];
+            }
+
+            // Reject any fragments that look like initials.
+            words = _(name.split(' ')).reject(function (name) {
+                return name.length < 3 || _(name).last() === '.';
+            });
+
+            // Lower-case any names that are fully uppercase
+            words = _(words).map(function (name) {
+                return name.toUpperCase() === name ? name.toLowerCase() : name;
+            });
+
+            // Upper-case the first character of each name.
+            words = _(words).map(function (name_part) {
+                return _(name_part).capitalize();
+            });
+
+            return [_(words).first() || "", (words.length > 1 ? _(words).last() : '')];
+        },
+
+        // Works out the first name (and returns it) if possible. If unsure, returns
+        // a trimmed version of the full input.
+        informalize: function (input) {
+            if (!input || !_(input).isString()) {
+                return '';
+            }
+
+            // Too many variations of what this could mean so we bail. For example:
+            // last, first; full name, company; full name, department; last, first title; etc.
+            if (input.indexOf(',') > -1) {
+                return input.trim();
+            }
+
+            return _(input).first_and_last()[0] || input.trim();
         }
     });
 }(_));

@@ -44,4 +44,34 @@ describe("_.", function () {
             expect(_([1, 1, 1, 1, 1]).uniqBy(Math.random)).toEqual([1, 1, 1, 1, 1]);
         });
     });
+
+    describe("informalize", function () {
+        it("should return an empty string on bogus inputs", function () {
+            expect(_(null).informalize()).toBe('');
+            expect(_('  ').informalize()).toBe('');
+            expect(_(45678).informalize()).toBe('');
+        });
+
+        it("should use the first name where detectable, main string otherwise", function () {
+            var friendlified_names = {
+                "Lee Mallabone": "Lee",
+                'Rahul V.': 'Rahul',
+                'TA': 'TA',
+                'Bosworth-Farthing': 'Bosworth-Farthing',
+                'lee': 'Lee',
+                'foobarjim': 'Foobarjim',
+                'Bradley "Alex"': 'Bradley "Alex"',
+                'BRANKO': 'Branko',
+                'Alan & Lynn': 'Alan & Lynn',
+                'Pittsburgh Wedding Photographer, Mary': 'Pittsburgh Wedding Photographer, Mary',
+                'даниил': 'Даниил',
+                '赵': '赵',
+                'Василевский': 'Василевский'
+            };
+
+            _(_(friendlified_names).keys()).each(function (key) {
+                expect(_(key).informalize()).toBe(friendlified_names[key]);
+            });
+        });
+    });
 });
