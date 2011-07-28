@@ -118,7 +118,7 @@
 
         // Returns a 2-item array of the first and last names if they can be determined from
         // the input.
-        first_and_last: function (input) {
+        firstAndLastName: function (input) {
             if (!input) {
                 return ['', ''];
             }
@@ -160,7 +160,7 @@
                 return input.trim();
             }
 
-            return _(input).first_and_last()[0] || input.trim();
+            return _(input).firstAndLastName()[0] || input.trim();
         }
     });
 }(_));
