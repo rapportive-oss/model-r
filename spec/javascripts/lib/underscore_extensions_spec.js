@@ -1,6 +1,43 @@
-/*jslint nomen: false */
+/*jslint nomen: false, onevar: false */
 /*global describe, it, expect, _ */
 describe("_.", function () {
+
+    describe("andand", function () {
+        it("should return the property when the subject is truthy", function () {
+            var obj = {hello: 'world'};
+            expect(_(obj).andand().hello).toEqual('world');
+            expect(_(obj).andand().fnar).toBeFalsy();
+        });
+
+        it("should return null when the subject is falsy", function () {
+            var nl = null;
+            var undef = undefined;
+
+            expect(_(nl).andand().hello).toBeFalsy();
+            expect(_(undef).andand().hello).toBeFalsy();
+        });
+
+        // NOTE: the first of these commented-out tests works, but because the 2nd does not,
+        // that style of use would be very unwise: the whole point of writing like that would
+        // be to rely on the missing behaviour.
+        // Tests left for posterity as we should be able to implement this when __noSuchMethod__
+        // (or equivalent) is implemented in WebKit.
+
+        // it("should return a function result when the subject is truthy", function () {
+        //     var obj = {
+        //         hello: function () {
+        //             return 'world';
+        //         }
+        //     };
+        //     expect(_(obj).andand().hello()).toEqual('world');
+        // });
+        // it("should return falsy when calling function on a falsy object");
+        //     var nl = null;
+        //     var undef = undefined;
+        //     expect(_(nl).andand().hello()).toBeFalsy();
+        //     expect(_(undef).andand().hello()).toBeFalsy();
+        // });
+    });
 
     describe("plucker", function () {
         it("should act like _.pluck", function () {
