@@ -47,5 +47,54 @@ describe("lib.timestamps", function () {
             expect(model.color_date).toBeUndefined();
         });
 
+        describe("change events", function () {
+
+            var model, spy;
+
+            beforeEach(function () {
+                model = (function () {
+                    var _public = {}, _protected = {};
+                    lib.model(_public, _protected, "color", "created_at");
+                    lib.timestamps(_public, _protected, "created_at", {granularity: 1000 * 60});
+                    return _public;
+                }());
+                spy = jasmine.createSpy();
+            });
+
+            it("should fire when changing form nothing to somethign", function () {
+                model.created_at = null;
+                model.onCreatedAtChange(spy);
+                model.created_at = new Date();
+                expect(spy).toHaveBeenCalled();
+            });
+
+            it("should fire when changing form something to nothing", function () {
+                model.created_at = new Date();
+                model.onCreatedAtChange(spy);
+                model.created_at = null;
+                expect(spy).toHaveBeenCalled();
+            });
+
+            it("should fire when the granularity is exceded in the forward direction", function () {
+                model.created_at = new Date("2011/01/01 01:01");
+                model.onCreatedAtChange(spy);
+                model.created_at = new Date("2011/01/01 01:03");
+                expect(spy).toHaveBeenCalled();
+            });
+
+            it("should fire when the granularity is exceded in the backward direction", function () {
+                model.created_at = new Date("2011/01/01 01:01");
+                model.onCreatedAtChange(spy);
+                model.created_at = new Date("2011/01/01 01:00:59");
+                expect(spy).toHaveBeenCalled();
+            });
+
+            it("should not fire when the granularity is not exceded", function () {
+                model.created_at = new Date("2011/01/01 01:01:00");
+                model.onCreatedAtChange(spy);
+                model.created_at = new Date("2011/01/01 01:01:01");
+                expect(spy).not.toHaveBeenCalled();
+            });
+        });
     });
 });

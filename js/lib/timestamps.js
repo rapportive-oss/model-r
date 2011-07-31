@@ -15,6 +15,8 @@
 // TODO: should this be automatic for any model attributes with a key ending in _at?
 lib.timestamps = function (_public, _protected, declared_attributes) {
 
+    var options = {};
+
     // Allow either lib.times(_p, _p, ['a','b','c']);
     //           or lib.times(_p, _p, 'a', 'b', 'c');
     //
@@ -24,15 +26,37 @@ lib.timestamps = function (_public, _protected, declared_attributes) {
         declared_attributes = _(arguments).toArray().slice(2);
     }
 
+    if (!_.isString(_(declared_attributes).last())) {
+        options = declared_attributes.pop();
+    }
+
+    function valueWithGranularity(date) {
+        return date.getTime() - date.getTime() % (options.granularity || 1);
+    }
+
     // Add helper getters for each attribute, they chain off each other
     _(declared_attributes).each(function (key) {
 
-        _public.__defineSetter__(key, _.wrap(_public.__lookupSetter__(key), function (_super, value) {
+        _public.__defineSetter__(key, function (value) {
+            var old_value = _public[key];
+
             if (value && !value.getTime) {
                 throw "Tried to assign a non-date to a date field! maybe you meant " + key + "_seconds, or " + key + "_millis=";
             }
-            return _super(value);
-        }));
+
+            // Ensure that setting a similar timestamp doesn't trigger change-handlers.
+            if (value && old_value) {
+
+                if (valueWithGranularity(old_value) !== valueWithGranularity(value)) {
+                    _public.attribute(key, value);
+                } else {
+                    old_value.setTime(value);
+                }
+
+            } else {
+                _public.attribute(key, value);
+            }
+        });
 
         _public.__defineGetter__(key + "_millis", function () {
             return _public[key] && _public[key].getTime();
