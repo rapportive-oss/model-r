@@ -12,7 +12,7 @@ describe("lib.timestamps", function () {
 
         it("should add helpers for the specified attributes", function () {
             var model = consistentModel();
-            var frozen_date = new Date(2011, 0, 8, 12, 32); // months are zero-based
+            var frozen_date = new Date(2011, 0, 8, 12, 32);
             var frozen_timestamp = parseInt(frozen_date.getTime() / 1000, 10); // unix timestamp
             model.created_at = frozen_date;
             
@@ -21,7 +21,7 @@ describe("lib.timestamps", function () {
 
         it("should return latest value after an update", function () {
             var model = consistentModel();
-            var frozen_date = new Date(2011, 0, 8, 12, 32); // months are zero-based
+            var frozen_date = new Date("2011/1/8 12:32 UTC");
             var frozen_timestamp = parseInt(frozen_date.getTime() / 1000, 10); // unix timestamp
             model.created_at = frozen_date;
 
@@ -30,7 +30,7 @@ describe("lib.timestamps", function () {
             expect(model.created_at).toEqual(frozen_date);
             expect(model.created_at_iso8601).toEqual('2011-01-08T1232');
 
-            var second_date = new Date(2012, 1, 2, 12, 32); // months are zero-based
+            var second_date = new Date("2012/2/2 12:32 UTC"); // months are zero-based
             var second_stamp = parseInt(second_date.getTime() / 1000, 10);
             model.created_at = second_date;
 
