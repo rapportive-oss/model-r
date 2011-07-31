@@ -31,7 +31,7 @@ describe("lib.timestamps", function () {
 
             expect(model.created_at).toEqual(frozen_timestamp);
             expect(model.created_at_timestamp).toEqual(frozen_timestamp);
-            expect(model.created_at_timestamp_milli).toEqual(frozen_timestamp * 1000);
+            expect(model.created_at_millis).toEqual(frozen_timestamp * 1000);
             expect(model.created_at_date).toEqual(frozen_date);
             expect(model.created_at_iso8601).toEqual('2011-01-08T1232');
 
@@ -41,7 +41,7 @@ describe("lib.timestamps", function () {
 
             expect(model.created_at).toEqual(second_stamp);
             expect(model.created_at_timestamp).toEqual(second_stamp);
-            expect(model.created_at_timestamp_milli).toEqual(second_stamp * 1000);
+            expect(model.created_at_millis).toEqual(second_stamp * 1000);
             expect(model.created_at_date).toEqual(second_date);
             expect(model.created_at_iso8601).toEqual('2012-02-02T1232');
         });

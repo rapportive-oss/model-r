@@ -31,7 +31,7 @@ lib.timestamps = function (_public, _protected, declared_attributes) {
             return parseInt(_public[key], 10);
         });
         
-        var timestamp_milli_method = timestamp_method + "_milli";
+        var timestamp_milli_method = key + "_millis";
         _public.__defineGetter__(timestamp_milli_method, function () {
             var timestamp = _public[timestamp_method];
             if (timestamp) {
