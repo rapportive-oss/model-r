@@ -101,6 +101,7 @@ describe("_.", function () {
                 'BRANKO': 'Branko',
                 'Alan & Lynn': 'Alan & Lynn',
                 'Pittsburgh Wedding Photographer, Mary': 'Pittsburgh Wedding Photographer, Mary',
+                'Aweber - Tom Petty': 'Aweber - Tom Petty',
                 'даниил': 'Даниил',
                 '赵': '赵',
                 'Василевский': 'Василевский'

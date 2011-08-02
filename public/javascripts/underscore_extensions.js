@@ -125,7 +125,7 @@
             var name = _(input).squeeze(' ').trim(),
                 words;
 
-            if (!name || name.match(/[0-9"\|\*\?\(\)\[\]<>_@~&]/) || name.length > 20) {
+            if (!name || name.match(/[0-9"\|\*\?\(\)\[\]<>_\-@~&]/) || name.length > 20) {
                 return ['', ''];
             }
 
