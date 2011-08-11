@@ -288,16 +288,18 @@ lib.model.class_from_attributes = function (attributes) {
 
 // These are like normal fields except that object eqaulity is used instead
 // of exact equality to decide whether or not to fire a change event.
-lib.model.object_fields = function (_public, _protected, declared_attributes) {
-    lib.model.apply(lib.model, arguments);
-    if (!_(declared_attributes).isArray()) {
-        declared_attributes = _(arguments).toArray().slice(2);
-    }
+lib.model.usingEquality = function (isEqual) {
+    return function (_public, _protected, declared_attributes) {
+        lib.model.apply(lib.model, arguments);
 
-    _public.attribute = _.wrap(_public.attribute, function (_super, name, new_value) {
-        if (_.include(declared_attributes, name) && typeof(new_value) !== 'undefined' && _.isEqual(new_value, _super(name))) {
-            return _super(name);
+        if (!_(declared_attributes).isArray()) {
+            declared_attributes = _(arguments).toArray().slice(2);
         }
-        return _super(name, new_value);
-    });
+
+        _(declared_attributes).each(function (name) {
+            _public.__defineSetter__(name, function (new_value) {
+                return _protected.setAttribute(name, new_value, !isEqual(new_value, _public[name]));
+            });
+        });
+    };
 };

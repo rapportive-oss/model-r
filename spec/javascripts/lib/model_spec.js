@@ -366,10 +366,10 @@ describe("lib.model", function () {
         });
     });
 
-    describe("lib.model.object_fields", function () {
+    describe("lib.model.usingEquality", function () {
         function objectModel() {
             var _public = {}, _protected = {};
-            lib.model.object_fields(_public, _protected, "numbers");
+            lib.model.usingEquality(_.isEqual)(_public, _protected, "numbers");
             return _public;
         }
         it("should fire event handlers when a value is replaced by another", function () {
