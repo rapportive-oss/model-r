@@ -84,6 +84,18 @@ describe("lib.model", function () {
             a.attributes({string: '42', number: 8});
             expect(callcount).toEqual(1);
         });
+
+        it("should allow setting things to undefined", function () {
+            var a = consistentModel();
+            var spy = jasmine.createSpy();
+
+            a.string = "1";
+            a.onStringChange(spy);
+            a.string = undefined;
+
+            expect(a.string).not.toBeDefined();
+            expect(spy).toHaveBeenCalled();
+        });
     });
 
 
