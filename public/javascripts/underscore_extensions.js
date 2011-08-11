@@ -161,6 +161,10 @@
             }
 
             return _(input).firstAndLastName()[0] || input.trim();
+        },
+
+        inspect: function (obj) {
+            return JSON.stringify(obj);
         }
     });
 }(_));
