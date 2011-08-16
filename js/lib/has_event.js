@@ -53,10 +53,10 @@ lib.hasEvent = function (_public, _protected, event_names) {
 
     // Trigger the event handlers for an arbitrary event name.
     _public.trigger = _public.trigger || function (name) {
-        var args = Array.prototype.slice.apply(arguments).slice(1), that = this;
+        var args = Array.prototype.slice.call(arguments, 1), that = this;
 
         if (_protected.event_handlers.hasOwnProperty(name)) {
-            _(_protected.event_handlers[name]).each(function (handler) {
+            _(_protected.event_handlers[name]).chain().clone().each(function (handler) {
                 handler.apply(that, args);
             });
         }
@@ -81,11 +81,7 @@ lib.hasEvent = function (_public, _protected, event_names) {
 
         // Trigger the event handlers for this specific event.
         _public['trigger' + _(event_name).camelize()] = function () {
-            var args = arguments, that = this;
-            _(_protected.event_handlers[event_name]).chain().clone().each(function (handler) {
-                handler.apply(that, args);
-            });
-            return _public;
+            return _public.trigger.apply(this, [event_name].concat(Array.prototype.slice.call(arguments)));
         };
     });
 };
