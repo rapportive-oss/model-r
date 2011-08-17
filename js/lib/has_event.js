@@ -81,7 +81,7 @@ lib.hasEvent = function (_public, _protected, event_names) {
 
         // Trigger the event handlers for this specific event.
         _public['trigger' + _(event_name).camelize()] = function () {
-            return _public.trigger.apply(this, [event_name].concat(Array.prototype.slice.call(arguments)));
+            return _public.trigger.apply(this, [event_name].concat(_(arguments).toArray()));
         };
     });
 };
