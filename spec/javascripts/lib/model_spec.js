@@ -84,6 +84,18 @@ describe("lib.model", function () {
             a.attributes({string: '42', number: 8});
             expect(callcount).toEqual(1);
         });
+
+        it("should allow setting things to undefined", function () {
+            var a = consistentModel();
+            var spy = jasmine.createSpy();
+
+            a.string = "1";
+            a.onStringChange(spy);
+            a.string = undefined;
+
+            expect(a.string).not.toBeDefined();
+            expect(spy).toHaveBeenCalled();
+        });
     });
 
 
@@ -354,10 +366,10 @@ describe("lib.model", function () {
         });
     });
 
-    describe("lib.model.object_fields", function () {
+    describe("lib.model.usingEquality", function () {
         function objectModel() {
             var _public = {}, _protected = {};
-            lib.model.object_fields(_public, _protected, "numbers");
+            lib.model.usingEquality(_.isEqual)(_public, _protected, "numbers");
             return _public;
         }
         it("should fire event handlers when a value is replaced by another", function () {

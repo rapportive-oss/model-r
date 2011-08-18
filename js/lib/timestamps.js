@@ -34,27 +34,18 @@ lib.timestamps = function (_public, _protected, declared_attributes) {
         return date.getTime() - date.getTime() % (options.granularity || 1);
     }
 
+    lib.model.usingEquality(function (a, b) {
+        return a && b ? valueWithGranularity(a) === valueWithGranularity(b) : a === b;
+    })(_public, _protected, declared_attributes);
+
     // Add helper getters for each attribute, they chain off each other
     _(declared_attributes).each(function (key) {
-
+        var _super = _public.__lookupSetter__(key);
         _public.__defineSetter__(key, function (value) {
-            var old_value = _public[key];
-
             if (value && !value.getTime) {
                 throw "Tried to assign a non-date to a date field! maybe you meant " + key + "_seconds, or " + key + "_millis=";
-            }
-
-            // Ensure that setting a similar timestamp doesn't trigger change-handlers.
-            if (value && old_value) {
-
-                if (valueWithGranularity(old_value) !== valueWithGranularity(value)) {
-                    _public.attribute(key, value);
-                } else {
-                    old_value.setTime(value);
-                }
-
             } else {
-                _public.attribute(key, value);
+                _super(value);
             }
         });
 

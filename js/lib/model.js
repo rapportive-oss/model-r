@@ -40,10 +40,10 @@ lib.model = function (_public, _protected, declared_attributes) {
         //     print(person.name);
 
         _public.__defineGetter__(name, function () {
-            return _public.attribute(name);
+            return _protected.attributes[name];
         });
         _public.__defineSetter__(name, function (new_value) {
-            return _public.attribute(name, new_value);
+            return _protected.setAttribute(name, new_value, new_value !== _public[name]);
         });
 
         // Define delayed setter for the attribute. (see setAttributeLater)
@@ -52,14 +52,13 @@ lib.model = function (_public, _protected, declared_attributes) {
         };
     });
 
-    // With one argument, returns the value of the attribute with that name.
-    // With two arguments, sets the attribute with the first argument's name to the second argument.
-    _public.attribute = function (name, new_value) {
-        if ((typeof(new_value) !== 'undefined') && (new_value !== _protected.attributes[name])) {
-            _protected.attributes[name] = new_value;
+    // Set the attribute with the given name to the given value, and trigger the change
+    // event if required.
+    _protected.setAttribute = function (name, new_value, trigger_change) {
+        _protected.attributes[name] = new_value;
+        if (trigger_change) {
             _public.transactionalTrigger(name + '_change', new_value);
         }
-        return _protected.attributes[name];
     };
 
     // With no arguments, returns a hash of attributes. (Please don't modify it!)
@@ -92,7 +91,7 @@ lib.model = function (_public, _protected, declared_attributes) {
     // currently being handled.
     _public.setAttributeLater = function (name, new_value) {
         window.setTimeout(function () {
-            _public.attribute(name, new_value);
+            _public[name] = new_value;
         }, 0);
     };
 
@@ -289,16 +288,18 @@ lib.model.class_from_attributes = function (attributes) {
 
 // These are like normal fields except that object eqaulity is used instead
 // of exact equality to decide whether or not to fire a change event.
-lib.model.object_fields = function (_public, _protected, declared_attributes) {
-    lib.model.apply(lib.model, arguments);
-    if (!_(declared_attributes).isArray()) {
-        declared_attributes = _(arguments).toArray().slice(2);
-    }
+lib.model.usingEquality = function (isEqual) {
+    return function (_public, _protected, declared_attributes) {
+        lib.model.apply(lib.model, arguments);
 
-    _public.attribute = _.wrap(_public.attribute, function (_super, name, new_value) {
-        if (_.include(declared_attributes, name) && typeof(new_value) !== 'undefined' && _.isEqual(new_value, _super(name))) {
-            return _super(name);
+        if (!_(declared_attributes).isArray()) {
+            declared_attributes = _(arguments).toArray().slice(2);
         }
-        return _super(name, new_value);
-    });
+
+        _(declared_attributes).each(function (name) {
+            _public.__defineSetter__(name, function (new_value) {
+                return _protected.setAttribute(name, new_value, !isEqual(new_value, _public[name]));
+            });
+        });
+    };
 };
