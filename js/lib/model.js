@@ -286,8 +286,13 @@ lib.model.class_from_attributes = function (attributes) {
     return klass;
 };
 
-// These are like normal fields except that object eqaulity is used instead
-// of exact equality to decide whether or not to fire a change event.
+// Override the equality checking (by default ===) that is used to decide
+// whether or not to trigger a change event when a model's property is assigned to.
+// This is particular useful in the case of _.isEqual, which gives you deep object
+// equality, though other functions are possible (see lib.timestamps for example).
+//
+// NOTE: An equivalence relation should be *symmetric* *reflexive* and *transitive*,
+// other kinds of function will confuse people.
 lib.model.usingEquality = function (isEqual) {
     return function (_public, _protected, declared_attributes) {
         lib.model.apply(lib.model, arguments);
