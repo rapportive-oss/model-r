@@ -305,6 +305,10 @@ lib.model.usingEquality = function (isEqual) {
             _public.__defineSetter__(name, function (new_value) {
                 return _protected.setAttribute(name, new_value, !isEqual(new_value, _public[name]));
             });
+
+            _public[_.camelize(name, true) + 'Equals'] = function (other_value) {
+                return isEqual(_public[name], other_value);
+            };
         });
     };
 };
