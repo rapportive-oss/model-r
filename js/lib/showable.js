@@ -15,6 +15,10 @@ lib.showable = function (_public, _protected) {
         _public.visible = false;
     };
 
+    _public.toggle = function () {
+        _public.visible = !_public.visible;
+    };
+
     _public.onDestroy(_public.hide);
 
     return _public;
