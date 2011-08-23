@@ -61,7 +61,7 @@ lib.model = function (_public, _protected, declared_attributes) {
         }
     };
 
-    // With no arguments, returns a hash of attributes. (Please don't modify it!)
+    // With no arguments, returns a clone of the current attributes hash.
     // With one argument (a hash), bulk-assigns the attributes given in the hash, and
     // doesn't modify attributes not mentioned in the hash.
     _public.attributes = function (new_attributes) {
@@ -73,7 +73,7 @@ lib.model = function (_public, _protected, declared_attributes) {
                     }
                 }
             }
-            return _protected.attributes;
+            return _.clone(_protected.attributes);
         });
     };
 
