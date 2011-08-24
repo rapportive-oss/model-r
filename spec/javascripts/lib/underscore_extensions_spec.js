@@ -1,5 +1,5 @@
-/*jslint nomen: false, onevar: false */
-/*global describe, it, expect, _ */
+/*jslint nomen: false, onevar: false, regexp: false */
+/*global describe, it, expect, _, jasmine */
 describe("_.", function () {
 
     describe("andand", function () {
@@ -89,34 +89,14 @@ describe("_.", function () {
             expect(_(45678).informalize()).toBe('');
         });
 
+        // TODO: This will remove comments from within strings
+        function parseJsonWithComments(str) {
+            // "." doesn't match newline chars (\r or \n) but $ and  [^*] do.
+            return JSON.parse(str.replace(new RegExp("//.*$|/\\*([^*]+|\\*[^/])*\\**/", "gm"), ''));
+        }
+
         it("should use the first name where detectable, main string otherwise", function () {
-            var friendlified_names = {
-                'TA': 'TA',
-                'R.A. Sloan': 'R.A. Sloan',
-                'Dr E.K. Nissen': 'Dr E.K. Nissen',
-                'Ed Sim': 'Ed',
-                'TA McCann': 'TA McCann',
-                'McGov Terran': 'McGov',
-                'Rahul V.': 'Rahul',
-                'Bosworth-Farthing': 'Bosworth-Farthing',
-                'lee': 'Lee',
-                'foobarjim': 'Foobarjim',
-                'Bradley "Alex"': 'Bradley "Alex"',
-                'BRANKO': 'Branko',
-                'Alan & Lynn': 'Alan & Lynn',
-                'Pittsburgh Wedding Photographer, Mary': 'Pittsburgh Wedding Photographer, Mary',
-                'даниил': 'Даниил',
-                '赵': '赵',
-                'Василевский': 'Василевский',
-                'mick h': 'Mick',
-                'mike.bramford@foobar.com': 'mike.bramford@foobar.com',
-                'PHILIP JIMBO': 'Philip',
-                'rebecca_mermaid': 'rebecca_mermaid',
-                'Ed': 'Ed',
-                'Becky at Love Eco': 'Becky',
-                'gavin N Ruth Ginger': 'Gavin',
-                'Jimbo, Nails': 'Jimbo, Nails'
-            };
+            var friendlified_names = parseJsonWithComments(jasmine.getFixtures().read("detergent_names.json")).for_send_and_remind;
 
             _(_(friendlified_names).keys()).each(function (key) {
                 expect(_(key).informalize()).toBe(friendlified_names[key]);
