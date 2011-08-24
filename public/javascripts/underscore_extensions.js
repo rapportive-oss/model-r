@@ -1,4 +1,4 @@
-/*jslint nomen: false */
+/*jslint nomen: false, onevar: false */
 /*global _: false */
 
 (function (_) {
@@ -116,51 +116,57 @@
             return result;
         },
 
-        // Returns a 2-item array of the first and last names if they can be determined from
-        // the input.
-        firstAndLastName: function (input) {
-            if (!input) {
-                return ['', ''];
-            }
-            var name = _(input).squeeze(' ').trim(),
-                words;
-
-            if (!name || name.match(/[0-9"\|\*\?\(\)\[\]<>_\-@~&]/) || name.length > 20) {
-                return ['', ''];
-            }
-
-            // Reject any fragments that look like initials.
-            words = _(name.split(' ')).reject(function (name) {
-                return name.length < 3 || _(name).last() === '.';
-            });
-
-            // Lower-case any names that are fully uppercase
-            words = _(words).map(function (name) {
-                return name.toUpperCase() === name ? name.toLowerCase() : name;
-            });
-
-            // Upper-case the first character of each name.
-            words = _(words).map(function (name_part) {
-                return _(name_part).capitalize();
-            });
-
-            return [_(words).first() || "", (words.length > 1 ? _(words).last() : '')];
-        },
-
         // Works out the first name (and returns it) if possible. If unsure, returns
         // a trimmed version of the full input.
-        informalize: function (input) {
+        informalize: function (input, fallback) {
+            function potentialFirst(words) {
+                var blacklist = ['mr', 'mrs', 'miss', 'ms', 'lord', 'lady', 'dame', 'dr', 'doctor', 'sir', 'master'];
+                words = _(words).clone();
+                var first_word = words.shift();
+
+                if (_(blacklist).indexOf(first_word.toLowerCase()) > -1) {
+                    // Disregard leading titles
+                    return potentialFirst(words);
+
+                } else if ((first_word.toUpperCase() === first_word && first_word.length < 3) ||
+                           first_word.charAt(first_word.length - 1) === '.') {
+                    // Leading initials suggest there's no first name present
+                    return null;
+                }
+                return first_word;
+            }
+
+            // Non-destructively capitalize a name unless it's tiny.
+            function clean(name) {
+                if (name.length < 3) {
+                    return name;
+                }
+                if (name.toUpperCase() === name) {
+                    name = name.toLowerCase();
+                }
+                // Note: this is fine for the current capitalize() implementation. Often such implementations
+                // will lowercase the entire string after the first character, which wouldn't be ok in this
+                // context due to names like McFoo.
+                return _(name).capitalize();
+            }
+
             if (!input || !_(input).isString()) {
                 return '';
             }
 
-            // Too many variations of what this could mean so we bail. For example:
-            // last, first; full name, company; full name, department; last, first title; etc.
-            if (input.indexOf(',') > -1) {
-                return input.trim();
+            var name = _(input).squeeze(' ').trim();
+            fallback = fallback || name;
+
+            // Bail if the input doesn't look like a name
+            if (!name || name.match(/[0-9"\|\*\?\,\(\)\[\]<>_\-@~&]/) || name.length > 30) {
+                return fallback;
             }
 
-            return _(input).firstAndLastName()[0] || input.trim();
+            var first_name = potentialFirst(name.split(/[\s]+/));
+            if (!first_name) {
+                return fallback;
+            }
+            return clean(first_name);
         },
 
         inspect: function (obj) {

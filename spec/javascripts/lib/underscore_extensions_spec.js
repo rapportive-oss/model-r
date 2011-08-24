@@ -91,9 +91,13 @@ describe("_.", function () {
 
         it("should use the first name where detectable, main string otherwise", function () {
             var friendlified_names = {
-                "Lee Mallabone": "Lee",
-                'Rahul V.': 'Rahul',
                 'TA': 'TA',
+                'R.A. Sloan': 'R.A. Sloan',
+                'Dr E.K. Nissen': 'Dr E.K. Nissen',
+                'Ed Sim': 'Ed',
+                'TA McCann': 'TA McCann',
+                'McGov Terran': 'McGov',
+                'Rahul V.': 'Rahul',
                 'Bosworth-Farthing': 'Bosworth-Farthing',
                 'lee': 'Lee',
                 'foobarjim': 'Foobarjim',
@@ -101,10 +105,17 @@ describe("_.", function () {
                 'BRANKO': 'Branko',
                 'Alan & Lynn': 'Alan & Lynn',
                 'Pittsburgh Wedding Photographer, Mary': 'Pittsburgh Wedding Photographer, Mary',
-                'Aweber - Tom Petty': 'Aweber - Tom Petty',
                 'даниил': 'Даниил',
                 '赵': '赵',
-                'Василевский': 'Василевский'
+                'Василевский': 'Василевский',
+                'mick h': 'Mick',
+                'mike.bramford@foobar.com': 'mike.bramford@foobar.com',
+                'PHILIP JIMBO': 'Philip',
+                'rebecca_mermaid': 'rebecca_mermaid',
+                'Ed': 'Ed',
+                'Becky at Love Eco': 'Becky',
+                'gavin N Ruth Ginger': 'Gavin',
+                'Jimbo, Nails': 'Jimbo, Nails'
             };
 
             _(_(friendlified_names).keys()).each(function (key) {
