@@ -10,11 +10,8 @@ describe("_.", function () {
         });
 
         it("should return null when the subject is falsy", function () {
-            var nl = null;
-            var undef = undefined;
-
-            expect(_(nl).andand().hello).toBeFalsy();
-            expect(_(undef).andand().hello).toBeFalsy();
+            expect(_(null).andand().hello).toBeFalsy();
+            expect(_(undefined).andand().hello).toBeFalsy();
         });
 
         // NOTE: the first of these commented-out tests works, but because the 2nd does not,
