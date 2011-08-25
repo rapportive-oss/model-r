@@ -1,5 +1,5 @@
 /*jslint nomen: false, onevar: false */
-/*global lib, _ */
+/*global lib, _, jQuery */
 
 // Augments _public to add date & timestamp helper getter properties for the specified declared_attributes.
 // NOTE: Those attributes must be unix timestamps for the getters to function.
@@ -30,12 +30,12 @@ lib.timestamps = function (_public, _protected, declared_attributes) {
         options = declared_attributes.pop();
     }
 
-    function valueWithGranularity(date) {
-        return date.getTime() - date.getTime() % (options.granularity || 1);
+    if (!options.granularity) {
+        options.granularity = 'millisecond';
     }
 
     lib.model.usingEquality(function (a, b) {
-        return a && b ? valueWithGranularity(a) === valueWithGranularity(b) : a === b;
+        return a && b ? jQuery.date.granularEquals(options.granularity, a, b) : a === b;
     })(_public, _protected, declared_attributes);
 
     // Add helper getters for each attribute, they chain off each other
