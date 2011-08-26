@@ -146,8 +146,11 @@ lib.model = function (_public, _protected, declared_attributes) {
         });
     };
 
-    // Make modifications to the model "atomically". Any listeners will
+    // Make modifications to the model in isolation. Any listeners will
     // not get notified until after the modifications are complete.
+    //
+    // On the assumption you don't raise an exception, this makes the changes
+    // appear atomically and consistently (due to javascript's single-threaded-ness).
     //
     // This is used by .attributes(), to ensure that when callbacks get
     // fired, the model is in a consistent state on each callback.
