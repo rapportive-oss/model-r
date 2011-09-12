@@ -35,6 +35,11 @@ lib.hasEvent = function (_public, _protected, event_names) {
         return _public.on(name, onceHandler);
     };
 
+    _public.nowAndOn = _public.nowAndOn || function (name, handler) {
+        handler.apply(_public, _(arguments).toArray().slice(2));
+        return _public.on(name, handler);
+    };
+
     _public.removeHandlers = _public.removeHandlers || function (name) {
         _protected.event_handlers[name] = [];
     };
