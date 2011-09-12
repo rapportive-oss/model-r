@@ -1,5 +1,5 @@
-/*jslint nomen: false, onevar: false */
-/*global describe, it, expect, _ */
+/*jslint nomen: false, onevar: false, regexp: false */
+/*global describe, it, expect, _, jasmine */
 describe("_.", function () {
 
     describe("andand", function () {
@@ -10,11 +10,8 @@ describe("_.", function () {
         });
 
         it("should return null when the subject is falsy", function () {
-            var nl = null;
-            var undef = undefined;
-
-            expect(_(nl).andand().hello).toBeFalsy();
-            expect(_(undef).andand().hello).toBeFalsy();
+            expect(_(null).andand().hello).toBeFalsy();
+            expect(_(undefined).andand().hello).toBeFalsy();
         });
 
         // NOTE: the first of these commented-out tests works, but because the 2nd does not,
@@ -89,23 +86,14 @@ describe("_.", function () {
             expect(_(45678).informalize()).toBe('');
         });
 
+        // TODO: This will remove comments from within strings
+        function parseJsonWithComments(str) {
+            // "." doesn't match newline chars (\r or \n) but $ and  [^*] do.
+            return JSON.parse(str.replace(new RegExp("//.*$|/\\*([^*]+|\\*[^/])*\\**/", "gm"), ''));
+        }
+
         it("should use the first name where detectable, main string otherwise", function () {
-            var friendlified_names = {
-                "Lee Mallabone": "Lee",
-                'Rahul V.': 'Rahul',
-                'TA': 'TA',
-                'Bosworth-Farthing': 'Bosworth-Farthing',
-                'lee': 'Lee',
-                'foobarjim': 'Foobarjim',
-                'Bradley "Alex"': 'Bradley "Alex"',
-                'BRANKO': 'Branko',
-                'Alan & Lynn': 'Alan & Lynn',
-                'Pittsburgh Wedding Photographer, Mary': 'Pittsburgh Wedding Photographer, Mary',
-                'Aweber - Tom Petty': 'Aweber - Tom Petty',
-                'даниил': 'Даниил',
-                '赵': '赵',
-                'Василевский': 'Василевский'
-            };
+            var friendlified_names = parseJsonWithComments(jasmine.getFixtures().read("detergent_names.json")).for_send_and_remind;
 
             _(_(friendlified_names).keys()).each(function (key) {
                 expect(_(key).informalize()).toBe(friendlified_names[key]);

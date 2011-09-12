@@ -61,7 +61,7 @@ lib.model = function (_public, _protected, declared_attributes) {
         }
     };
 
-    // With no arguments, returns a hash of attributes. (Please don't modify it!)
+    // With no arguments, returns a clone of the current attributes hash.
     // With one argument (a hash), bulk-assigns the attributes given in the hash, and
     // doesn't modify attributes not mentioned in the hash.
     _public.attributes = function (new_attributes) {
@@ -73,7 +73,7 @@ lib.model = function (_public, _protected, declared_attributes) {
                     }
                 }
             }
-            return _protected.attributes;
+            return _.clone(_protected.attributes);
         });
     };
 
@@ -146,8 +146,11 @@ lib.model = function (_public, _protected, declared_attributes) {
         });
     };
 
-    // Make modifications to the model "atomically". Any listeners will
+    // Make modifications to the model in isolation. Any listeners will
     // not get notified until after the modifications are complete.
+    //
+    // On the assumption you don't raise an exception, this makes the changes
+    // appear atomically and consistently (due to javascript's single-threaded-ness).
     //
     // This is used by .attributes(), to ensure that when callbacks get
     // fired, the model is in a consistent state on each callback.
@@ -305,6 +308,10 @@ lib.model.usingEquality = function (isEqual) {
             _public.__defineSetter__(name, function (new_value) {
                 return _protected.setAttribute(name, new_value, !isEqual(new_value, _public[name]));
             });
+
+            _public[_.camelize(name, true) + 'Equals'] = function (other_value) {
+                return isEqual(_public[name], other_value);
+            };
         });
     };
 };

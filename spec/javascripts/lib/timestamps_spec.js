@@ -55,7 +55,7 @@ describe("lib.timestamps", function () {
                 model = (function () {
                     var _public = {}, _protected = {};
                     lib.model(_public, _protected, "color", "created_at");
-                    lib.timestamps(_public, _protected, "created_at", {granularity: 1000 * 60});
+                    lib.timestamps(_public, _protected, "created_at", {granularity: 'minute'});
                     return _public;
                 }());
                 spy = jasmine.createSpy();
