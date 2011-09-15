@@ -25,7 +25,7 @@ lib.storage = (function () {
     // (obviously in the case of a corrupted data file, or no local storage at
     // all, then nothing is actually persistant at all).
 
-    function handleQuotaError(name, value, e, opts) {
+    function handleStorageError(name, value, e, opts) {
 
         opts = jQuery.extend({
             on_quota_exceeded: function () {
@@ -57,7 +57,7 @@ lib.storage = (function () {
             opts.on_quota_exceeded();
         } else {
             // Assume localStorage is totally brokened.
-            fsLog("Not writing " + name + " to localStorage: " + e);
+            fsLog("Failed to write " + name + " to localStorage: " + e);
         }
     }
 
@@ -78,7 +78,7 @@ lib.storage = (function () {
             workingStorage[name] = value;
             localStorage[name] = value;
         } catch (e) {
-            handleQuotaError(name, value, e, opts);
+            handleStorageError(name, value, e, opts);
         }
     };
 
