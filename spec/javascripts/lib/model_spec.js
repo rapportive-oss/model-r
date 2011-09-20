@@ -1,13 +1,12 @@
 /*jslint nomen: false, onevar: false */
 /*global describe, it, expect, beforeEach, lib, _, jQuery, jasmine */
 describe("lib.model", function () {
+    function consistentModel() {
+        var _public = {}, _protected = {};
+        lib.model(_public, _protected, "number", "string");
+        return _public;
+    }
     describe("attributes", function () {
-        function consistentModel() {
-            var _public = {}, _protected = {};
-            lib.model(_public, _protected, "number", "string");
-            return _public;
-        }
-
         it("should update all attributes", function () {
             var a = consistentModel();
             a.attributes({number: 1, string: '1'});
@@ -95,6 +94,40 @@ describe("lib.model", function () {
 
             expect(a.string).not.toBeDefined();
             expect(spy).toHaveBeenCalled();
+        });
+    });
+
+    describe("transaction", function () {
+        it("should not crash when nested transactions are used", function () {
+            var a = consistentModel()
+                .onNumberChange(function (n) {
+                    a.attributes({string: '' + n});
+                })
+                .onStringChange(function (s) {
+                    a.attributes({number: parseInt(s, 10)});
+                });
+
+            a.string = "1";
+            expect(a.number).toEqual(1);
+        });
+
+        it("should not trigger handlers when nested", function (i) {
+            var a = consistentModel(),
+                spy = jasmine.createSpy();
+
+            a.onNumberChange(spy);
+
+            a.transaction(function () {
+                a.number = 2;
+                a.transaction(function () {
+                    a.number = 3;
+                });
+                expect(spy).not.toHaveBeenCalledWith(2);
+                expect(spy).not.toHaveBeenCalledWith(3);
+            });
+            expect(spy).toHaveBeenCalledWith(2);
+            expect(spy).toHaveBeenCalledWith(3);
+            expect(a.number).toEqual(3);
         });
     });
 

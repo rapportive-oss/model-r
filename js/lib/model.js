@@ -152,11 +152,15 @@ lib.model = function (_public, _protected, declared_attributes) {
     // This is used by .attributes(), to ensure that when callbacks get
     // fired, the model is in a consistent state on each callback.
     //
-    // TODO: We could improve this mechanism to be correctly re-entrant.
     _public.transaction = function (func) {
-        if (!_protected.transaction_queue) {
-            _protected.transaction_queue = [];
+        // If we're already in a transaction, then we'll just run func()
+        // straightaway, any transactionalTriggers will be fired at the
+        // end of the existing transaction.
+        if (_protected.transaction_queue) {
+            return func();
         }
+
+        _protected.transaction_queue = [];
         var ret = func();
 
         while (_protected.transaction_queue.length) {
