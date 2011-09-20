@@ -37,7 +37,7 @@ lib.hasEvent = function (_public, _protected, event_names) {
 
     _public.nowAndOn = _public.nowAndOn || function (name, handler) {
         handler.apply(_public, _(arguments).toArray().slice(2));
-        return _public.on(name, handler);
+        return _public["on" + _.camelize(name)](handler);
     };
 
     _public.removeHandlers = _public.removeHandlers || function (name) {

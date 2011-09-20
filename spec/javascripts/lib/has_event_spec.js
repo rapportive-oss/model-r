@@ -208,6 +208,12 @@ describe("lib.hasEvent", function () {
                 obj.triggerFoo(2);
                 expect(foo_handler_1).toHaveBeenCalledWith(2);
             });
+
+            it("should raise an error if you bind to a non-extant event.", function () {
+                expect(function () {
+                    obj.nowAndOn('barbarosa', function () { });
+                }).toThrow();
+            });
         });
     });
 });
