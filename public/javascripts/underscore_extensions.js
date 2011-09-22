@@ -1,5 +1,4 @@
-/*jslint nomen: false, onevar: false */
-/*global _: false */
+/*jslint onevar: false */
 
 (function (_) {
     _.mixin({
