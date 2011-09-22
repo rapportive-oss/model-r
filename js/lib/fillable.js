@@ -34,8 +34,6 @@
  * of those objects will be used to detect which objects have not changed during a refill.
  */
 
-/*jslint nomen: false */
-/*global lib, _ */
 lib.fillable = function (_public, _protected, spec) {
 
     var remaining_arguments = _.toArray(arguments).slice(3);

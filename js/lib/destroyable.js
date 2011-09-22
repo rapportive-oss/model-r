@@ -1,5 +1,3 @@
-/*jslint nomen: false */
-/*global lib, _ */
 
 /* A wrapper for lib.hasEvent(_public, _protected, 'destroy') that
  * also provides a listenUntilDestroyed method for leak-avoiding handlers.

@@ -1,5 +1,4 @@
-/*jslint nomen: false*/
-/*global lib, window, fsLog, _, jQuery*/
+/*global window */
 
 // A wrapper around localStorage that tries to make the size limit less painful.
 //

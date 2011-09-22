@@ -1,5 +1,4 @@
-/*jslint nomen: false, onevar: false */
-/*global lib, _, jQuery */
+/*jslint onevar: false */
 
 // Augments _public to add date & timestamp helper getter properties for the specified declared_attributes.
 // NOTE: Those attributes must be unix timestamps for the getters to function.

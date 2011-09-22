@@ -1,5 +1,3 @@
-/*jslint nomen: false*/
-/*global lib*/
 lib.showable = function (_public, _protected) {
 
     lib.model(_public, _protected, 'visible');
