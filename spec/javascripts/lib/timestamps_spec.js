@@ -1,6 +1,4 @@
-/*jslint nomen: false, onevar: false */
-/*global describe, it, expect, beforeEach, lib, _, jQuery, jasmine */
-
+/*jslint onevar: false*/
 describe("lib.timestamps", function () {
     describe("property helpers", function () {
         function consistentModel() {

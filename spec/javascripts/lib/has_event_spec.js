@@ -1,5 +1,3 @@
-/*jslint nomen: false*/
-/*global describe,it,expect,beforeEach,jasmine,lib*/
 describe("lib.hasEvent", function () {
     describe("mixin constructor", function () {
         it("should accept a list of event names", function () {

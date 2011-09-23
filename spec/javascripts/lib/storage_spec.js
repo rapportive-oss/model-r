@@ -1,7 +1,4 @@
-/*jslint nomen: false*/
-/*global describe, it, expect, spyOn, beforeEach, afterEach, jasmine */
-/*global localStorage, console, lib */
-
+/*global localStorage, console*/
 describe("lib.storage", function () {
     it("should read from localStorage", function () {
         localStorage.foo = "bar";

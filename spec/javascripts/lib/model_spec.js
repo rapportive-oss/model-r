@@ -1,5 +1,4 @@
-/*jslint nomen: false, onevar: false */
-/*global describe, it, expect, beforeEach, lib, _, jQuery, jasmine */
+/*jslint onevar: false*/
 describe("lib.model", function () {
     function consistentModel() {
         var _public = {}, _protected = {};

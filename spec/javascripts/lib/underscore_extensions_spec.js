@@ -1,5 +1,3 @@
-/*jslint nomen: false, onevar: false, regexp: false */
-/*global describe, it, expect, _, jasmine */
 describe("_.", function () {
 
     describe("andand", function () {
