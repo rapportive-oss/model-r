@@ -136,11 +136,8 @@ lib.model = function (_public, _protected, declared_attributes) {
     // callback immediately. Whenever in future the attribute is changed from something else to
     // `expected_value`, the callback is called again.
     _public.wheneverEqual = function (name, expected_value, callback) {
-        if (_public[name] === expected_value) {
-            callback.call(_public);
-        }
-        return _public.on(name + '_change', function (new_value) {
-            if (new_value === expected_value) {
+        return _public.nowAndOn(name + '_change', function () {
+            if (_public[name] === expected_value) {
                 callback.call(_public);
             }
         });

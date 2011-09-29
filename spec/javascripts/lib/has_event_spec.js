@@ -186,5 +186,32 @@ describe("lib.hasEvent", function () {
                 expect(foo_handler_1).not.toHaveBeenCalledWith(2);
             });
         });
+
+        describe("nowAndOn", function () {
+            it("should execute the function immediately", function () {
+                foo_handler_1 = jasmine.createSpy('foo handler 1');
+                obj.nowAndOn('foo', foo_handler_1);
+                expect(foo_handler_1).toHaveBeenCalled();
+            });
+
+            it("should pass any remaining arguments to the first invocation of the function", function () {
+                foo_handler_1 = jasmine.createSpy('foo handler 1');
+                obj.nowAndOn('foo', foo_handler_1, 1, 2, 3);
+                expect(foo_handler_1).toHaveBeenCalledWith(1, 2, 3);
+            });
+
+            it("should also register the event handler", function () {
+                foo_handler_1 = jasmine.createSpy('foo handler 1');
+                obj.nowAndOn('foo', foo_handler_1);
+                obj.triggerFoo(2);
+                expect(foo_handler_1).toHaveBeenCalledWith(2);
+            });
+
+            it("should raise an error if you bind to a non-extant event.", function () {
+                expect(function () {
+                    obj.nowAndOn('barbarosa', function () { });
+                }).toThrow();
+            });
+        });
     });
 });
