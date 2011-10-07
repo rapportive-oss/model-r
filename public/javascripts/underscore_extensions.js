@@ -170,8 +170,20 @@
 
         // Return a clean email address or null.
         cleanEmail: function (input) {
-            var match = _.isString(input) && input.match(_.RE_EMAIL);
-            return match ? match[1].toLowerCase() : null;
+            return _.extractEmails(input)[0] || null;
+        },
+
+        // Return a list of all (cleaned) email addresses in a string.
+        extractEmails: function (input) {
+            return _((input || "").split(_.RE_EMAIL))
+                .chain()
+                .select(function (str, index) {
+                    // string.split returns an array of alternating non-email and email strings.
+                    // Selecting just the odd-numbered indexes reduces the list to only contain email addresses.
+                    return index % 2 === 1;
+                })
+                .invoke('toLowerCase')
+                .value();
         },
 
         inspect: function (obj) {
