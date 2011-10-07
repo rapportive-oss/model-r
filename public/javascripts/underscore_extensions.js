@@ -1,4 +1,4 @@
-/*jslint onevar: false */
+/*jslint onevar: false, regexp: false */
 
 (function (_) {
     _.mixin({
@@ -168,8 +168,16 @@
             return clean(first_name);
         },
 
+        // Return a clean email address or null.
+        cleanEmail: function (input) {
+            var match = _.isString(input) && input.match(_.RE_EMAIL);
+            return match ? match[1].toLowerCase() : null;
+        },
+
         inspect: function (obj) {
             return JSON.stringify(obj);
         }
     });
+
+    _.RE_EMAIL = /((?:[^\s@<>:]+)@(?:[a-z0-9\-]+\.)+[a-z]{2,})/i;
 }(_));
