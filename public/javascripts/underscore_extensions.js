@@ -191,6 +191,13 @@
         }
     });
 
-    // Taken from the HTML5 spec.
+    // Based on the HTML5 spec: http://www.w3.org/TR/html5/states-of-the-type-attribute.html#valid-e-mail-address
+    //
+    // Differs from the HTML5 spec rule in that we require at least one dot in the domain name,
+    // excluding things like root@localhost -- although technically that's a valid email address,
+    // there's very little we can do with a domain name that's not rooted in the public DNS.
+    //
+    // The regex also excludes colons from the user part (filtering out mailto:foo@example.com) and
+    // question marks from the domain part (filtering out foo@example.com?subject=bar).
     _.RE_EMAIL = /([a-z0-9!#$%&'\*+\-\/=?\^_`\{\|\}~\.]+@(?:[a-z0-9\-]+)(?:\.[a-z0-9\-]+)+)/i;
 }(_));
