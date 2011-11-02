@@ -25,4 +25,14 @@ lib.destroyable = function (_public, _protected) {
         _public.onDestroy(destroyable.triggerDestroy);
         return destroyable;
     };
+
+    // Either chain a DOM node to the current destroyable, or create a new <div> that will
+    // be destroyed when this destroyable is destroyed.
+    _public.destroyableDiv = function (node) {
+        node = node || jQuery('<div>');
+        _public.onDestroy(function () {
+            node.remove();
+        });
+        return node;
+    };
 };
