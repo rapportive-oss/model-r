@@ -26,12 +26,21 @@ describe('fillable', function () {
         return _public;
     }
 
+    function plan_model(context, data) {
+        var _public = {}, _protected = {};
+
+        lib.model(_public, _protected, 'key', 'value');
+
+        return _public;
+    }
+
     function profile (context, data) {
         var _public = {}, _protected = {};
 
         lib.fillable(_public, _protected, {
             'memberships': [membership],
             'name': name,
+            'plan': plan_model
         }, context)(data);
 
         return _public;
@@ -80,7 +89,7 @@ describe('fillable', function () {
                 memberships: [
                     {profile_url: 'http://fb.com/a', username: 'conrad.irwin'},
                     {profile_url: 'http://twitter.com/b', username: 'ConradIrwin'}
-                ]
+                ],
             });
         });
 
@@ -145,6 +154,18 @@ describe('fillable', function () {
 
             expect(myprofile.memberships).not.toContain(twitter);
             expect(myprofile.memberships).not.toContain(facebook);
+        });
+
+        it("should fire a change event for a property when that property's values are changed", function () {
+            var changeDetected = false;
+
+            myprofile.refill({plan: {key: 'first', value: 'plan'}});
+            myprofile.onPlanChange(function () {
+                changeDetected = true;
+            });
+            expect(changeDetected).toBe(false);
+            myprofile.refill({plan: {key: 'hello', value: 'world'}});
+            expect(changeDetected).toBe(true);
         });
     });
 });

@@ -82,11 +82,16 @@ lib.fillable = function (_public, _protected, spec) {
             return _public.transaction(function () {
                 _(attributes).each(function (value, name) {
 
-                    var filler = _public[name] && (_public[name].refill || _public[name].attributes);
+                    var filler = _public[name] && (_public[name].refill || _public[name].attributes),
+                        triggerer = function () {
+                            _public.trigger(name + "_change", _public[name]);
+                        };
 
                     // Something model-like, let's re-fill the existing object.
                     if (_.isFunction(filler)) {
+                        _public[name].onChange(triggerer);
                         filler.call(_public[name], value);
+                        _public[name].removeHandler(name + "_change", triggerer);
 
                     // Nothing model-like present already, try making something new.
                     } else if (_.isFunction(spec[name])) {
