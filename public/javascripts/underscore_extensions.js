@@ -150,7 +150,7 @@
             }
 
             if (!input || !_(input).isString()) {
-                return fallback;
+                return fallback || "";
             }
 
             var name = _(input).squeeze(' ').trim();
