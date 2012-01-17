@@ -1,4 +1,5 @@
 /*jslint onevar: false, regexp: false */
+/*global setTimeout, clearTimeout */
 
 (function (_) {
     _.mixin({
@@ -188,6 +189,65 @@
 
         inspect: function (obj) {
             return JSON.stringify(obj);
+        },
+
+
+        /*
+         * throttle and debounce backported from Underscore 1.3.0 to fix bugs.
+         * Our vendored (1.1.6) Underscore's throttle produces a function that,
+         * on first call, does nothing; then after the timeout, it calls the
+         * wrapped function.  What you'd expect is for the first call to happen
+         * immediately, and a delay only to be introduced if throttling is
+         * needed.
+         *
+         * See https://github.com/documentcloud/underscore/issues/170
+         *
+         * Modified for jslint compliance but otherwise unchanged from 1.3.0.
+         */
+        // Returns a function, that, when invoked, will only be triggered at most once
+        // during a given window of time.
+        throttle: function (func, wait) {
+            var context, args, timeout, throttling, more;
+            var whenDone = _.debounce(function () {
+                more = throttling = false;
+            }, wait);
+            return function () {
+                context = this;
+                args = arguments;
+                var later = function () {
+                    timeout = null;
+                    if (more) {
+                        func.apply(context, args);
+                    }
+                    whenDone();
+                };
+                if (!timeout) {
+                    timeout = setTimeout(later, wait);
+                }
+                if (throttling) {
+                    more = true;
+                } else {
+                    func.apply(context, args);
+                }
+                whenDone();
+                throttling = true;
+            };
+        },
+
+        // Returns a function, that, as long as it continues to be invoked, will not
+        // be triggered. The function will be called after it stops being called for
+        // N milliseconds.
+        debounce: function (func, wait) {
+            var timeout;
+            return function () {
+                var context = this, args = arguments;
+                var later = function () {
+                    timeout = null;
+                    func.apply(context, args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
     });
 
