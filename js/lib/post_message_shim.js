@@ -21,17 +21,18 @@ lib.postMessageShim = function (_public, _protected, opts) {
     lib.hasEvent(_public, _protected, opts.send);
     lib.hasEvent(_public, _protected, opts.receive);
 
+    // TODO: make sure "rapportive:true" is being set on all messages.
     opts.iframe.message(function (msg) {
         if (_(opts.receive).include(msg.action)) {
             _public.trigger(msg.action, msg);
-        } else {
+        } else if (msg.rapportive) {
             fsLog("Got unexpected postMessage: " + JSON.stringify(msg));
         }
     });
 
     _(opts.send).each(function (name) {
         _public.on(name, function (msg) {
-            $.message(opts.iframe[0], jQuery.extend({action: name}, msg), opts.remote_base_url);
+            $.message(opts.iframe[0], jQuery.extend({action: name, rapportive: true}, msg), opts.remote_base_url);
         });
     });
 };
