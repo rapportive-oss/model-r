@@ -11,7 +11,17 @@
 //
 // opts is an object with:
 // {
-//   iframe: the iframe to send messages to
+//   iframe: the iframe to send messages to and receive messages from
+//   receive: [a list of actions we expect to receive],
+//   send: [a list of actions we expect to send],
+//   remote_base_url: the url to send with postMessage to ensure it arrives at the correct domain
+// }
+//
+// Alternatively, if you're listening and sending to different objects, you can specify them
+// explicitly instead of the 'iframe' property, eg:
+// {
+//   listener: $(window),
+//   recipient: $(window.parent),
 //   receive: [a list of actions we expect to receive],
 //   send: [a list of actions we expect to send],
 //   remote_base_url: the url to send with postMessage to ensure it arrives at the correct domain
@@ -21,7 +31,10 @@ lib.postMessageShim = function (_public, _protected, opts) {
     lib.hasEvent(_public, _protected, opts.send);
     lib.hasEvent(_public, _protected, opts.receive);
 
-    opts.iframe.message(function (msg) {
+    var listener = opts.iframe || opts.listener,
+        recipient = opts.iframe || opts.recipient;
+
+    listener.message(function (msg, reply, e) {
         if (_(opts.receive).include(msg.action)) {
             _public.trigger(msg.action, msg);
         } else {
@@ -31,7 +44,10 @@ lib.postMessageShim = function (_public, _protected, opts) {
 
     _(opts.send).each(function (name) {
         _public.on(name, function (msg) {
-            $.message(opts.iframe[0], jQuery.extend({action: name}, msg), opts.remote_base_url);
+            if (recipient.jquery) {
+                recipient = recipient[0];
+            }
+            $.message(recipient, jQuery.extend({action: name}, msg), opts.remote_base_url);
         });
     });
 };
