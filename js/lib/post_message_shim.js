@@ -34,10 +34,11 @@ lib.postMessageShim = function (_public, _protected, opts) {
     var listener = opts.iframe || opts.listener,
         recipient = opts.iframe || opts.recipient;
 
+    // TODO: make sure "rapportive:true" is being set on all messages.
     listener.message(function (msg, reply, e) {
         if (_(opts.receive).include(msg.action)) {
             _public.trigger(msg.action, msg);
-        } else {
+        } else if (msg.rapportive) {
             fsLog("Got unexpected postMessage: " + JSON.stringify(msg));
         }
     });
@@ -47,7 +48,7 @@ lib.postMessageShim = function (_public, _protected, opts) {
             if (recipient.jquery) {
                 recipient = recipient[0];
             }
-            $.message(recipient, jQuery.extend({action: name}, msg), opts.remote_base_url);
+            $.message(recipient, jQuery.extend({action: name, rapportive: true}, msg), opts.remote_base_url);
         });
     });
 };
