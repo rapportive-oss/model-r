@@ -26,6 +26,9 @@
 //   send: [a list of actions we expect to send],
 //   remote_base_url: the url to send with postMessage to ensure it arrives at the correct domain
 // }
+//
+// remote_base_url can be a function, in which case it is evaluated every time a message is sent.
+// (useful if the destination URL cannot be determined at the time postMessageShim is declared).
 lib.postMessageShim = function (_public, _protected, opts) {
 
     lib.hasEvent(_public, _protected, opts.send);
@@ -48,7 +51,8 @@ lib.postMessageShim = function (_public, _protected, opts) {
             if (recipient.jquery) {
                 recipient = recipient[0];
             }
-            $.message(recipient, jQuery.extend({action: name, rapportive: true}, msg), opts.remote_base_url);
+            $.message(recipient, jQuery.extend({action: name, rapportive: true}, msg),
+                      (_.isFunction(opts.remote_base_url) ? opts.remote_base_url() : opts.remote_base_url));
         });
     });
 };
