@@ -31,14 +31,13 @@
 // (useful if the destination URL cannot be determined at the time postMessageShim is declared).
 lib.postMessageShim = function (_public, _protected, opts) {
 
-    var listener = opts.iframe || opts.listener,
-        recipient = opts.iframe || opts.recipient;
+    var other = opts.iframe || opts.window;
 
     if (opts.receive) {
         lib.hasEvent(_public, _protected, opts.receive);
 
         // TODO: make sure "rapportive:true" is being set on all messages.
-        listener.message(loggily("postmessageshim.message", function (msg, reply, e) {
+        $.message(other, loggily("postmessageshim.message", function (msg, reply, e) {
             if (_(opts.receive).include(msg.action)) {
                 _public.trigger(msg.action, msg);
             } else if (msg.rapportive) {
@@ -52,10 +51,7 @@ lib.postMessageShim = function (_public, _protected, opts) {
 
         _(opts.send).each(function (name) {
             _public.on(name, function (msg) {
-                if (recipient.jquery) {
-                    recipient = recipient[0];
-                }
-                $.message(recipient, jQuery.extend({action: name, rapportive: true}, msg),
+                $.message(other, jQuery.extend({action: name, rapportive: true}, msg),
                           (_.isFunction(opts.remote_base_url) ? opts.remote_base_url() : opts.remote_base_url));
             });
         });
