@@ -38,13 +38,13 @@ lib.postMessageShim = function (_public, _protected, opts) {
         recipient = opts.iframe || opts.recipient;
 
     // TODO: make sure "rapportive:true" is being set on all messages.
-    listener.message(function (msg, reply, e) {
+    listener.message(loggily("postmessageshim.message", function (msg, reply, e) {
         if (_(opts.receive).include(msg.action)) {
             _public.trigger(msg.action, msg);
         } else if (msg.rapportive) {
             fsLog("Got unexpected postMessage: " + JSON.stringify(msg));
         }
-    });
+    }));
 
     _(opts.send).each(function (name) {
         _public.on(name, function (msg) {
