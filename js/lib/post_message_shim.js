@@ -31,7 +31,8 @@
 // (useful if the destination URL cannot be determined at the time postMessageShim is declared).
 lib.postMessageShim = function (_public, _protected, opts) {
 
-    var other = opts.iframe || opts.window;
+    var other = opts.iframe || opts.window,
+        debug = true;
 
     if (opts.receive) {
         lib.hasEvent(_public, _protected, opts.receive);
@@ -39,6 +40,9 @@ lib.postMessageShim = function (_public, _protected, opts) {
         // TODO: make sure "rapportive:true" is being set on all messages.
         $.message(other, loggily("postmessageshim.message", function (msg, reply, e) {
             if (_(opts.receive).include(msg.action)) {
+                if (debug) {
+                    fsLog((opts.name || 'pmshim') + " -->RECV: " + JSON.stringify(msg));
+                }
                 _public.trigger(msg.action, msg);
             } else if (msg.rapportive) {
                 fsLog((opts.name || 'pmshim') + " got unexpected postMessage: " + JSON.stringify(msg));
@@ -51,8 +55,11 @@ lib.postMessageShim = function (_public, _protected, opts) {
 
         _(opts.send).each(function (name) {
             _public.on(name, function (msg) {
-                $.message(other, jQuery.extend({action: name, rapportive: true}, msg),
-                          (_.isFunction(opts.remote_base_url) ? opts.remote_base_url() : opts.remote_base_url));
+                msg = jQuery.extend({action: name, rapportive: true}, msg);
+                if (debug) {
+                    fsLog((opts.name || 'pmshim') + " SENT-->: " + JSON.stringify(msg));
+                }
+                $.message(other, msg, (_.isFunction(opts.remote_base_url) ? opts.remote_base_url() : opts.remote_base_url));
             });
         });
     }
