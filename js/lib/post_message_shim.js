@@ -42,7 +42,7 @@ lib.postMessageShim = function (_public, _protected, opts) {
         if (_(opts.receive).include(msg.action)) {
             _public.trigger(msg.action, msg);
         } else if (msg.rapportive) {
-            fsLog("Got unexpected postMessage: " + JSON.stringify(msg));
+            fsLog((opts.name || 'pmshim') + " got unexpected postMessage: " + JSON.stringify(msg));
         }
     }));
 
