@@ -21,7 +21,7 @@
 // explicitly instead of the 'iframe' property, eg:
 // {
 //   listener: $(window),
-//   recipient: $(window.parent),
+//   recipient: window.parent,
 //   receive: [a list of actions we expect to receive],
 //   send: [a list of actions we expect to send],
 //   remote_base_url: the url to send with postMessage to ensure it arrives at the correct domain
@@ -31,28 +31,34 @@
 // (useful if the destination URL cannot be determined at the time postMessageShim is declared).
 lib.postMessageShim = function (_public, _protected, opts) {
 
-    lib.hasEvent(_public, _protected, opts.send);
-    lib.hasEvent(_public, _protected, opts.receive);
-
     var listener = opts.iframe || opts.listener,
         recipient = opts.iframe || opts.recipient;
 
-    // TODO: make sure "rapportive:true" is being set on all messages.
-    listener.message(loggily("postmessageshim.message", function (msg, reply, e) {
-        if (_(opts.receive).include(msg.action)) {
-            _public.trigger(msg.action, msg);
-        } else if (msg.rapportive) {
-            fsLog((opts.name || 'pmshim') + " got unexpected postMessage: " + JSON.stringify(msg));
-        }
-    }));
+    if (opts.receive) {
+        lib.hasEvent(_public, _protected, opts.receive);
 
-    _(opts.send).each(function (name) {
-        _public.on(name, function (msg) {
-            if (recipient.jquery) {
-                recipient = recipient[0];
+        // TODO: make sure "rapportive:true" is being set on all messages.
+        listener.message(loggily("postmessageshim.message", function (msg, reply, e) {
+            if (_(opts.receive).include(msg.action)) {
+                _public.trigger(msg.action, msg);
+            } else if (msg.rapportive) {
+                fsLog((opts.name || 'pmshim') + " got unexpected postMessage: " + JSON.stringify(msg));
             }
-            $.message(recipient, jQuery.extend({action: name, rapportive: true}, msg),
-                      (_.isFunction(opts.remote_base_url) ? opts.remote_base_url() : opts.remote_base_url));
+        }));
+    }
+
+    if (opts.send) {
+        lib.hasEvent(_public, _protected, opts.send);
+
+        _(opts.send).each(function (name) {
+            _public.on(name, function (msg) {
+                if (recipient.jquery) {
+                    recipient = recipient[0];
+                }
+                $.message(recipient, jQuery.extend({action: name, rapportive: true}, msg),
+                          (_.isFunction(opts.remote_base_url) ? opts.remote_base_url() : opts.remote_base_url));
+            });
         });
-    });
+    }
+
 };
