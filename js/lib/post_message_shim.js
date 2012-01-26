@@ -11,19 +11,10 @@
 //
 // opts is an object with:
 // {
-//   iframe: the iframe to send messages to and receive messages from
+//   iframe|window: the iframe to send messages to and receive messages from
 //   receive: [a list of actions we expect to receive],
 //   send: [a list of actions we expect to send],
-//   remote_base_url: the url to send with postMessage to ensure it arrives at the correct domain
-// }
-//
-// Alternatively, if you're listening and sending to different objects, you can specify them
-// explicitly instead of the 'iframe' property, eg:
-// {
-//   listener: $(window),
-//   recipient: window.parent,
-//   receive: [a list of actions we expect to receive],
-//   send: [a list of actions we expect to send],
+//   model: [a list of fields to copy around amoungst the frames]
 //   remote_base_url: the url to send with postMessage to ensure it arrives at the correct domain
 // }
 //
@@ -33,6 +24,35 @@ lib.postMessageShim = function (_public, _protected, opts) {
 
     var other = opts.iframe || opts.window,
         debug = true;
+
+    function sendMessage(msg) {
+        if (debug) {
+            fsLog((opts.name || 'pmshim') + " SENT-->: " + JSON.stringify(msg));
+        }
+        $.message(other, msg, (_.isFunction(opts.remote_base_url) ? opts.remote_base_url() : opts.remote_base_url));
+    }
+
+    if (opts.model) {
+        lib.model(_public, _protected, opts.model);
+
+        opts.receive = (opts.receive || []).concat(_(opts.model).map(function (field) {
+            return field + '_sync';
+        }));
+
+        _(opts.model).each(function (name) {
+            var syncedValue;
+            _public.on(name + '_sync', function (value) {
+                syncedValue = value.value;
+                _public[name] = value.value;
+                syncedValue = undefined;
+            });
+            _public.on(name + '_change', function (value) {
+                if (value !== syncedValue) {
+                    sendMessage({action: name + '_sync', rapportive: true, value: value});
+                }
+            });
+        });
+    }
 
     if (opts.receive) {
         lib.hasEvent(_public, _protected, opts.receive);
@@ -55,11 +75,7 @@ lib.postMessageShim = function (_public, _protected, opts) {
 
         _(opts.send).each(function (name) {
             _public.on(name, function (msg) {
-                msg = jQuery.extend({action: name, rapportive: true}, msg);
-                if (debug) {
-                    fsLog((opts.name || 'pmshim') + " SENT-->: " + JSON.stringify(msg));
-                }
-                $.message(other, msg, (_.isFunction(opts.remote_base_url) ? opts.remote_base_url() : opts.remote_base_url));
+                sendMessage(jQuery.extend({action: name, rapportive: true}, msg));
             });
         });
     }
