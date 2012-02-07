@@ -98,4 +98,33 @@ describe("_.", function () {
             });
         });
     });
+
+    describe("nameFromEmail", function () {
+        it("should return a name from a name-email address string", function () {
+            expect(_('Lee Mallabone <lee@rapportive.com>').nameFromEmail()).toBe('Lee Mallabone');
+        });
+
+        it("should handle quotes", function () {
+            expect(_('"Lee Mallabone" <foo@bar.com>').nameFromEmail()).toBe('Lee Mallabone');
+        });
+
+        it("should sanitize in the face of dubious punctuation", function () {
+            expect(_(' "Lee" - <foo@bar.com>, ').nameFromEmail()).toBe('Lee');
+        });
+
+        it("should return null if a name can't be determined", function () {
+            var cases = [
+                'foo@bar.com',
+                '"" <foo@rapportive.com>',
+                '<foo@gmail.com>',
+                'foo@bar.com <foo@bar.com>',
+                'lee@rapportive.com <lee.mallabone@gmail.com>',
+                '"lee@localhost" <lee@rapportive.com>'
+            ];
+
+            _(cases).each(function (email) {
+                expect(_(email).nameFromEmail()).toBeNull();
+            });
+        });
+    });
 });

@@ -174,6 +174,25 @@
             return _.extractEmails(input)[0] || null;
         },
 
+        // Takes a string that may contain a name, email address and arbitrary punctuation,
+        // and tries to return a sanitized version of just the name.
+        nameFromEmail: function (input) {
+            if (!input) {
+                return null;
+            }
+            if (input.indexOf('@') > -1 && input.indexOf('<') === -1) {
+                return null; // an email address only, no name present
+            }
+            input = input.replace(/<.+$/, '').replace(/\W{2,}/g, '').trim().
+                replace(/^\W+/, '').replace(/\W+$/, '').trim();
+
+            // If there are email-address like things in the remainder, bail
+            if (input.indexOf('@') > -1) {
+                return null;
+            }
+            return input || null;
+        },
+
         // Return a list of all (cleaned) email addresses in a string.
         extractEmails: function (input) {
             return _((input || "").split(_.RE_EMAIL))
