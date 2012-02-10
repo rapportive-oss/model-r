@@ -183,8 +183,7 @@
             if (input.indexOf('@') > -1 && input.indexOf('<') === -1) {
                 return null; // an email address only, no name present
             }
-            input = input.replace(/<.+$/, '').replace(/\W{2,}/g, '').trim().
-                replace(/^\W+/, '').replace(/\W+$/, '').trim();
+            input = input.replace(/<.+$/, '').replace(_.RE_PUNCT, '').trim();
 
             // If there are email-address like things in the remainder, bail
             if (input.indexOf('@') > -1) {
@@ -279,4 +278,13 @@
     // The regex also excludes colons from the user part (filtering out mailto:foo@example.com) and
     // question marks from the domain part (filtering out foo@example.com?subject=bar).
     _.RE_EMAIL = /([a-z0-9!#$%&'\*+\-\/=?\^_`\{\|\}~\.]+@(?:[a-z0-9\-]+)(?:\.[a-z0-9\-]+)+)/i;
+
+    // Copied from jQuery.truncate.js — a list of common punctuation.
+    _.RE_PUNCT = new RegExp('([\"\'/\\\\~|.<>:;\\-=#_' + [
+        "\u00a6", "\u00ab", "\u00b7", "\u00bb",     // broken bar, &laquo;, middle dot, &raquo;
+        "\u2010", "\u2011", "\u2012", "\u2013",     // hyphen, non-breaking hyphen, figure dash, en dash
+        "\u2014", "\u2015", "\u2016", "\u2022",     // em dash, horizontal bar, double bar, bullet
+        "\u2023", "\u2039", "\u203a"               // triangular bullet, &lsaquo;, &rsaquo;
+    ].join("") + "])", "g");
+
 }(_));

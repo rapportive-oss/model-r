@@ -112,6 +112,11 @@ describe("_.", function () {
             expect(_(' "Lee" - <foo@bar.com>, ').nameFromEmail()).toBe('Lee');
         });
 
+        it("should not mangle foreign names", function () {
+            expect(_("Gerbert Olivé Vázquez").nameFromEmail()).toBe("Gerbert Olivé Vázquez");
+            expect(_("Ævar Arnfjörð Bjarmason").nameFromEmail()).toBe("Ævar Arnfjörð Bjarmason");
+        });
+
         it("should return null if a name can't be determined", function () {
             var cases = [
                 'foo@bar.com',
