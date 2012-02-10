@@ -1,3 +1,4 @@
+/*global window */
 describe("_.", function () {
 
     describe("andand", function () {
@@ -125,6 +126,39 @@ describe("_.", function () {
             _(cases).each(function (email) {
                 expect(_(email).nameFromEmail()).toBeNull();
             });
+        });
+    });
+
+    describe("deferInSequence", function () {
+        var a;
+        beforeEach(function () {
+            a = 0;
+        });
+
+        function first() {
+            a += 10;
+        }
+        function second() {
+            a *= 5;
+        }
+        function third() {
+            a += 10;
+        }
+        it("should run all functions", function () {
+            expect(a).toBe(0);
+            _.deferInSequence([first, second, third]);
+            expect(a).toBe(0); // they should run deferred
+
+            window.setTimeout(function () {
+                expect(a).toBe(60);
+            }, 10); // arbitrary longish delay
+        });
+
+        it("should run the sequence in the correct order", function () {
+            _.deferInSequence([second, first, third]);
+            window.setTimeout(function () {
+                expect(a).toBe(20);
+            }, 10); // arbitrary longish delay
         });
     });
 });
