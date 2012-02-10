@@ -59,11 +59,11 @@
 
         // Turns a CamelCaseExpression into an underscore_expression.
         underscore: function (str) {
-            return str.
-                replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2').
-                replace(/([a-z0-9])([A-Z])/g, '$1_$2').
-                replace(/\-/g, '_').
-                toLowerCase();
+            return str
+               .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
+               .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+               .replace(/\-/g, '_')
+               .toLowerCase();
         },
 
         // Escapes a string for inclusion into a regular expression.
