@@ -149,16 +149,17 @@ describe("_.", function () {
             _.deferInSequence([first, second, third]);
             expect(a).toBe(0); // they should run deferred
 
-            window.setTimeout(function () {
-                expect(a).toBe(60);
-            }, 10); // arbitrary longish delay
+            waitsFor(function () {
+                return a === 60;
+            }, "sequence did not complete");
         });
 
         it("should run the sequence in the correct order", function () {
             _.deferInSequence([second, first, third]);
-            window.setTimeout(function () {
-                expect(a).toBe(20);
-            }, 10); // arbitrary longish delay
+
+            waitsFor(function () {
+                return a === 20;
+            }, "sequence did not complete");
         });
     });
 });
