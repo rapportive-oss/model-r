@@ -111,6 +111,7 @@ describe("_.", function () {
 
         it("should sanitize in the face of dubious punctuation", function () {
             expect(_(' "Lee" - <foo@bar.com>, ').nameFromEmail()).toBe('Lee');
+            expect(_("Heroku Beta Program ").nameFromEmail()).toBe('Heroku Beta Program');
         });
 
         it("should not mangle foreign names", function () {
