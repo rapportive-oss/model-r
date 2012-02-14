@@ -266,6 +266,17 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
             };
+        },
+
+        deferInSequence: function (functions) {
+            var funcs = _.clone(functions);
+
+            return _.defer(function () {
+                if (funcs[0]) {
+                    funcs.shift().apply();
+                    return _.deferInSequence(funcs);
+                }
+            });
         }
     });
 

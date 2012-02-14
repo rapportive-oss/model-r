@@ -1,6 +1,6 @@
 describe('fillable', function () {
 
-    function name (context, value) {
+    function name(context, value) {
         var _public = {}, _protected = {};
 
         lib.fillable(_public, _protected, function (value) {
@@ -34,7 +34,7 @@ describe('fillable', function () {
         return _public;
     }
 
-    function profile (context, data) {
+    function profile(context, data) {
         var _public = {}, _protected = {};
 
         lib.fillable(_public, _protected, {
@@ -89,7 +89,7 @@ describe('fillable', function () {
                 memberships: [
                     {profile_url: 'http://fb.com/a', username: 'conrad.irwin'},
                     {profile_url: 'http://twitter.com/b', username: 'ConradIrwin'}
-                ],
+                ]
             });
         });
 
