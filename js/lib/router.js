@@ -1,6 +1,7 @@
 /*jslint onevar:false, regexp:false */
 /*global components, window, document, navigator */
 
+// An extraction/port of Backbone.Router & Backbone.history to components.router and components.history, respectively.
 // Backbone.Router
 // -------------------
 
@@ -19,7 +20,7 @@ components.RapportiveRouter = function (options) {
 // parts of route strings.
 var namedParam    = /:\w+/g;
 var splatParam    = /\*\w+/g;
-var escapeRegExp  = /[-[\]{}()+?.,\\^$|#\s]/g;
+var escapeRegExp  = /[\-\[\]{}()+?.,\\\^$|#\s]/g;
 
 // Set up all inheritable **Backbone.Router** properties and methods.
 _.extend(components.RapportiveRouter.prototype, /*Events, */ {
@@ -91,7 +92,9 @@ _.extend(components.RapportiveRouter.prototype, /*Events, */ {
         }
         var routes = [];
         for (var route in this.routes) {
-            routes.unshift([route, this.routes[route]]);
+            if (this.routes.hasOwnProperty(route)) {
+                routes.unshift([route, this.routes[route]]);
+            }
         }
         for (var i = 0, l = routes.length; i < l; i += 1) {
             this.route(routes[i][0], routes[i][1], this[routes[i][1]]);
