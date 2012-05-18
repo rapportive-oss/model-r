@@ -42,8 +42,6 @@ _.extend(components.RapportiveRouter.prototype, /*Events, */ {
             enter: _.bind(function (fragment) {
                 var args = this._extractParameters(route, fragment);
                 options.enter.apply(this, args);
-                this.trigger.apply(this, ['route:' + options.name].concat(args));
-                components.history.trigger('route', this, options.name, args);
             }, this),
 
             exit: _.bind(function (exiting_from_fragment) {
@@ -72,8 +70,6 @@ _.extend(components.RapportiveRouter.prototype, /*Events, */ {
             if (callback) {
                 callback.apply(this, args);
             }
-//            this.trigger.apply(this, ['route:' + name].concat(args));
-            // components.history.trigger('route', this, name, args);
         }, this));
         return this;
     },
