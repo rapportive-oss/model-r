@@ -192,18 +192,12 @@ _.extend(History.prototype, /*Events,*/ {
         this._hasPushState    = !!(this.options.pushState && window.history && window.history.pushState);
         var fragment          = this.getFragment();
         var docMode           = document.documentMode;
-        var oldIE             = (isExplorer.exec(navigator.userAgent.toLowerCase()) && (!docMode || docMode <= 7));
-
-        if (oldIE) {
-            this.iframe = $('<iframe src="javascript:0" tabindex="-1" />').hide().appendTo('body')[0].contentWindow;
-            this.navigate(fragment);
-        }
 
         // Depending on whether we're using pushState or hashes, and whether
         // 'onhashchange' is supported, determine how we check the URL state.
         if (this._hasPushState) {
             $(window).bind('popstate', this.checkUrl);
-        } else if (this._wantsHashChange && ('onhashchange' in window) && !oldIE) {
+        } else if (this._wantsHashChange && ('onhashchange' in window) ) {
             $(window).bind('hashchange', this.checkUrl);
         } else if (this._wantsHashChange) {
             this._checkUrlInterval = window.setInterval(this.checkUrl, this.interval);
