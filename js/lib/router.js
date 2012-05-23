@@ -192,7 +192,7 @@ _.extend(History.prototype, /*Events,*/ {
         // 'onhashchange' is supported, determine how we check the URL state.
         if (this._hasPushState) {
             $(window).bind('popstate', this.checkUrl);
-        } else if (this._wantsHashChange && ('onhashchange' in window) ) {
+        } else if (this._wantsHashChange && ('onhashchange' in window)) {
             $(window).bind('hashchange', this.checkUrl);
         } else if (this._wantsHashChange) {
             this._checkUrlInterval = window.setInterval(this.checkUrl, this.interval);
