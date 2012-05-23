@@ -13,7 +13,6 @@ components.RapportiveRouter = function (options) {
         this.routes = options.routes;
     }
     this._bindRoutes();
-    this.initialize.apply(this, arguments);
 };
 
 // Cached regular expressions for matching named param parts and splatted
@@ -24,10 +23,6 @@ var escapeRegExp  = /[\-\[\]{}()+?.,\\\^$|#\s]/g;
 
 // Set up all inheritable **Backbone.Router** properties and methods.
 _.extend(components.RapportiveRouter.prototype, /*Events, */ {
-
-    // Initialize is an empty function by default. Override it with your own
-    // initialization logic.
-    initialize: function () {},
 
     // Instead of #route(path, name, callback), we take name and callbacks in the 'options'
     reversible_route: function (route, options) {
