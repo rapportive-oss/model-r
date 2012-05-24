@@ -47,6 +47,20 @@ _.extend(components.RapportiveRouter.prototype, /*Events, */ {
         return this;
     },
 
+    // Give us better flexibility on URL parts - URI decode values and allow
+    // an underscore character to be used in lieu of a null/empty string.
+    sanitizeUrlBit: function (bit) {
+        if (!bit) {
+            return bit;
+        }
+        bit = bit.trim();
+        if (bit.length === 0 || bit === '_' || bit === encodeURIComponent('_')) {
+            return null;
+        }
+
+        return decodeURIComponent(bit).replace(/\+/g, ' ');
+    },
+
     // Manually bind a single named route to a callback. For example:
     //
     //     this.route('search/:query/p:num', 'search', function(query, num) {
@@ -62,6 +76,10 @@ _.extend(components.RapportiveRouter.prototype, /*Events, */ {
         }
         components.history.route(route, _.bind(function (fragment) {
             var args = this._extractParameters(route, fragment);
+            var that = this;
+            args = _(args).map(function (param) {
+                return that.sanitizeUrlBit(param);
+            });
             if (callback) {
                 callback.apply(this, args);
             }
