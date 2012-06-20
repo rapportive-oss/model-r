@@ -26,6 +26,12 @@ lib.destroyable = function (_public, _protected) {
         return destroyable;
     };
 
+    // Make the deferrable fail when the destroyable is destroyed.
+    _public.chainedDeferrable = function (deferrable) {
+        _public.onDestroy(deferrable.reject);
+        return deferrable;
+    };
+
     // Either chain a DOM node to the current destroyable, or create a new <div> that will
     // be destroyed when this destroyable is destroyed.
     _public.destroyableDiv = function (node) {
@@ -35,4 +41,6 @@ lib.destroyable = function (_public, _protected) {
         });
         return node;
     };
+
+    return _public;
 };
