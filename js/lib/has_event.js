@@ -70,7 +70,7 @@ lib.hasEvent = function (_public, _protected, event_names) {
 
     // Returns true if anything is currently listening for the named event, false otherwise.
     _public.hasHandlers = _public.hasHandlers || function (event_name) {
-        return _(_protected.event_handlers[event_name]).andand().length > 0;
+        return (_protected.event_handlers[event_name] || []).length > 0;
     };
 
     // Allow either lib.hasEvent(_p, _p, ['a', 'b', 'c']),
