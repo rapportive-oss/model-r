@@ -27,7 +27,7 @@ lib.postMessageShim = function (_public, _protected, opts) {
 
     function sendMessage(msg) {
         if (debug) {
-            fsLog((opts.name || 'pmshim') + " SENT-->: " + JSON.stringify(msg));
+            console.log((opts.name || 'pmshim') + " SENT-->: " + JSON.stringify(msg));
         }
         $.message(other, msg, (_.isFunction(opts.remote_base_url) ? opts.remote_base_url() : opts.remote_base_url));
     }
@@ -61,11 +61,11 @@ lib.postMessageShim = function (_public, _protected, opts) {
         $.message(other, loggily("postmessageshim.message", function (msg, reply, e) {
             if (_(opts.receive).include(msg.action)) {
                 if (debug) {
-                    fsLog((opts.name || 'pmshim') + " -->RECV: " + JSON.stringify(msg));
+                    console.log((opts.name || 'pmshim') + " -->RECV: " + JSON.stringify(msg));
                 }
                 _public.trigger(msg.action, msg);
             } else if (msg.rapportive) {
-                fsLog((opts.name || 'pmshim') + " got unexpected postMessage: " + JSON.stringify(msg));
+                console.log((opts.name || 'pmshim') + " got unexpected postMessage: " + JSON.stringify(msg));
             }
         }));
     }

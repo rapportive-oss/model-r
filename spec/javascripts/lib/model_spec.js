@@ -350,7 +350,7 @@ describe("lib.model", function () {
         it("should deep clone cloneable model objects", function () {
             var clone = example_model.clone();
             expect(example_model.object_attr.model.instance_number).toEqual(2);
-            expect(clone.object_attr.model.instance_number).toBeOneOf(3, 4, 5);
+            expect([3, 4, 5]).toContain(clone.object_attr.model.instance_number);
             clone.array_attr[2].obj.value = "ccc";
             clone.object_attr.model.value = "ddd";
             expect(example_model.array_attr[2].obj.value).toEqual("c");

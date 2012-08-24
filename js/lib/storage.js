@@ -32,7 +32,7 @@ lib.storage = (function () {
                 // workingStorage.
                 _public.setItem(name, value, {
                     on_quota_exceeded: function () {
-                        fsLog("Not writing " + name + " to localStorage: this value is too big.");
+                        console.log("Not writing " + name + " to localStorage: this value is too big.");
                     }
                 });
             }
@@ -56,7 +56,7 @@ lib.storage = (function () {
             opts.on_quota_exceeded();
         } else {
             // Assume localStorage is totally brokened.
-            fsLog("Failed to write " + name + " to localStorage: " + e);
+            console.log("Failed to write " + name + " to localStorage: " + e);
         }
     }
 
@@ -65,7 +65,7 @@ lib.storage = (function () {
             try {
                 workingStorage[name] = localStorage[name];
             } catch (e) {
-                fsLog("Not reading " + name + " from localStorage: " + e);
+                console.log("Not reading " + name + " from localStorage: " + e);
                 workingStorage[name] = null;
             }
         }
