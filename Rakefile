@@ -18,7 +18,7 @@ task :release do
   puts "Writing: release/model-r-#{version}.js"
   File.open("release/model-r-#{version}.js", 'w') do |output|
     output.puts "/*** model-r-#{version}.js ***/"
-    Dir["js/lib/*.js"].sort.each do |file|
+    Dir["js/lib/[a-z]*.js"].sort.each do |file|
       output << File.read(file)
     end
   end
