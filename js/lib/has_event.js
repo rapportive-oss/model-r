@@ -1,4 +1,5 @@
-/*jslint onevar: false */
+/*jslint onevar: false, nomen: false */
+/*global lib, _, jQuery */
 
 // Mixin which gives an object event handling capabilities. Call
 // lib.hasEvent(_public, _protected, 'foo') to generate two methods for this event:
@@ -36,7 +37,7 @@ lib.hasEvent = function (_public, _protected, event_names) {
 
     _public.nowAndOn = _public.nowAndOn || function (name, handler) {
         handler.apply(_public, _(arguments).toArray().slice(2));
-        return _public["on" + _.camelize(name)](handler);
+        return _public["on" + lib.camelize(name)](handler);
     };
 
     _public.removeHandlers = _public.removeHandlers || function (name) {
@@ -84,12 +85,12 @@ lib.hasEvent = function (_public, _protected, event_names) {
         _protected.event_handlers[event_name] = _protected.event_handlers[event_name] || [];
 
         // Register a new event handler for this specific event.
-        _public['on' + _(event_name).camelize()] = function (handler) {
+        _public['on' + lib.camelize(event_name)] = function (handler) {
             return _public.on(event_name, handler);
         };
 
         // Trigger the event handlers for this specific event.
-        _public['trigger' + _(event_name).camelize()] = function () {
+        _public['trigger' + lib.camelize(event_name)] = function () {
             return _public.trigger.apply(this, [event_name].concat(_(arguments).toArray()));
         };
     });

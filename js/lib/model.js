@@ -1,5 +1,5 @@
-/*jslint onevar: false */
-/*global window */
+/*jslint onevar: false, nomen: false */
+/*global window, lib, _, jQuery */
 
 // lib.model(_public, _protected, attribute_name_one, attribute_name_two, ...)
 // makes this object a model object with accessor methods for named attributes,
@@ -47,7 +47,7 @@ lib.model = function (_public, _protected, declared_attributes) {
         });
 
         // Define delayed setter for the attribute. (see setAttributeLater)
-        _public['set' + _(name).camelize() + 'Later'] = function (new_value) {
+        _public['set' + lib.camelize(name) + 'Later'] = function (new_value) {
             _public.setAttributeLater(name, new_value);
         };
     });
@@ -67,7 +67,8 @@ lib.model = function (_public, _protected, declared_attributes) {
     _public.attributes = function (new_attributes) {
         return _public.transaction(function () {
             if (typeof(new_attributes) !== 'undefined') {
-                for (var attribute in new_attributes) {
+                var attribute;
+                for (attribute in new_attributes) {
                     if (new_attributes.hasOwnProperty(attribute)) {
                         _public[attribute] = new_attributes[attribute];
                     }
@@ -310,7 +311,7 @@ lib.model.usingEquality = function (isEqual) {
                 return _protected.setAttribute(name, new_value, !isEqual(new_value, _public[name]));
             });
 
-            _public[_.camelize(name, true) + 'Equals'] = function (other_value) {
+            _public[lib.camelize(name, true) + 'Equals'] = function (other_value) {
                 return isEqual(_public[name], other_value);
             };
         });
