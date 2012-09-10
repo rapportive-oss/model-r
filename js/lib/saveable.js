@@ -27,6 +27,19 @@ lib.saveable = function (_public, _protected, key) {
         }
     };
 
+    // Only integrate and save the hash of 'timestampedData' if its fetched_at
+    // property is a more recent (integer) timestamp than that which is already saved.
+    _public.mergeNewest = function (timestampedData) {
+        var saved = _public.fetch();
+
+        if (!saved || !saved.fetched_at || saved.fetched_at < timestampedData.fetched_at) {
+            _public.attributes(timestampedData);
+            _public.save();
+        } else {
+            _public.attributes(saved);
+        }
+    };
+
     _public.clearStorage = function () {
         lib.storage.setItem(key, undefined);
     };
