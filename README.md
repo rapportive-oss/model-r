@@ -73,7 +73,7 @@ fred.whenEqual('authenticated', true, function () {
 Encapsulating some functionality in a custom mixin:
 ```javascript
 
-lib.remoteLoggable = function(_public, _protected, base_url) {
+lib.remoteLoggable = function (_public, _protected) {
     _protected.log = function (message) {
         return $.ajax({            // requires jQuery/Zepto
             url: '/client/logger', // server must implement this endpoint 
