@@ -12,7 +12,7 @@ Key points
 
 Examples
 ========
-
+Creating a user model that can authenticate:
 ```javascript
 models.user = function () {
 
@@ -67,6 +67,43 @@ fred.login('test');
 fred.whenEqual('authenticated', true, function () {
     window.location = "/welcome";
 });
+
+```
+
+Encapsulating some functionality in a custom mixin:
+```javascript
+
+lib.remoteLoggable = function(_public, _protected, base_url) {
+    _protected.log = function (message) {
+        return $.ajax({            // requires jQuery/Zepto
+            url: '/client/logger', // server must implement this endpoint 
+            data: {message: message},
+            type: 'POST',
+            dataType: 'json',
+            error: function (error) {
+                console.log("Failed with error (" + error + ") trying to log: ", message);
+            }
+        });
+    };
+
+    return _public;
+};
+
+models.user = function (first_name) {
+    var _public = {}, _protected = {};
+
+    lib.remoteLoggable(_public, _protected);
+
+    _public.greet = function () {
+        _protected.log("We totally said hello to " + first_name);
+        return "Hello world, and hello " + first_name + "!";
+    };
+
+    return _public;
+};
+
+var lee = models.user("Lee");
+lee.greet(); // a message also gets POSTed to our server.
 
 ```
 
