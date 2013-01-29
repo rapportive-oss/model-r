@@ -61,6 +61,8 @@ _.extend(components.RapportiveRouter.prototype, /*Events, */ {
         return decodeURIComponent(bit).replace(/\+/g, ' ');
     },
 
+    routes_by_name: {},
+
     // Manually bind a single named route to a callback. For example:
     //
     //     this.route('search/:query/p:num', 'search', function(query, num) {
@@ -68,9 +70,12 @@ _.extend(components.RapportiveRouter.prototype, /*Events, */ {
     //     });
     //
     route: function (route, name, callback) {
+        this.routes_by_name[name] = route;
+
         if (!_.isRegExp(route)) {
             route = this._routeToRegExp(route);
         }
+
         if (!callback) {
             callback = this[name];
         }
