@@ -298,9 +298,9 @@ _.extend(History.prototype, /*Events,*/ {
 
         var fragment = this.fragment = this.getFragment(fragmentOverride);
         var matched = _.any(this.handlers, function (handler) {
-            if (handler.route.test(fragment)) {
+            if (handler.route.test(fragment.toLowerCase())) {
                 that._currentUrl = fragment;
-                (handler.enter || handler.callback)(fragment);
+                (handler.enter || handler.callback)(fragment.toLowerCase());
                 return true;
             }
         });
