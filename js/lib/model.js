@@ -29,7 +29,7 @@ lib.model = function (_public, _protected, declared_attributes) {
         var change_event_name = name + '_change';
         lib.hasEvent(_public, _protected, change_event_name);
         _public.on(change_event_name, function (new_value) {
-            _public.transactionalTrigger('change');
+            _public.transactionalTrigger('change', _public);
         });
 
         // Define getter/setter for the attribute.
@@ -178,7 +178,7 @@ lib.model = function (_public, _protected, declared_attributes) {
         // times in the same transaction if the onChange handlers also triggered changes).
         if (_protected.transaction_triggered_change) {
             _protected.transaction_triggered_change = false;
-            _public.triggerChange();
+            _public.triggerChange(_public);
         }
         return ret;
     };
