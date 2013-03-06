@@ -29,3 +29,6 @@ task :release do
     minified.write(JSMin.minify(File.read("release/model-r-#{version}.js")))
   end
 end
+
+task :default => :release
+
