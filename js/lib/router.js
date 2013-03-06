@@ -300,7 +300,7 @@ _.extend(History.prototype, /*Events,*/ {
         var matched = _.any(this.handlers, function (handler) {
             if (handler.route.test(fragment.toLowerCase())) {
                 that._currentUrl = fragment;
-                (handler.enter || handler.callback)(fragment.toLowerCase());
+                (handler.enter || handler.callback)(fragment);
                 return true;
             }
         });
