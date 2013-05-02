@@ -10,10 +10,11 @@ end
 
 task :release do
   begin
-    require 'jsmin'
+    require 'uglifier'
   rescue LoadError
-    abort "jsmin is not available. In order to run rake release you must: gem install jsmin"
+    abort "Cannot load uglifier, is it installed?"
   end
+
   version = `git describe --tags --always --dirty`.sub('v', '').tr('-','.').chomp
   puts "Writing: release/model-r-#{version}.js"
   File.open("release/model-r-#{version}.js", 'w') do |output|
@@ -24,10 +25,14 @@ task :release do
   end
   puts "Writing: release/model-r-#{version}.min.js"
 
+  uglified, source_map = Uglifier.new.compile_with_map(File.read("release/model-r-#{version}.js"))
+
   File.open("release/model-r-#{version}.min.js", 'w') do |minified|
     minified.write("/*** model-r-#{version}.min.js ***/")
-    minified.write(JSMin.minify(File.read("release/model-r-#{version}.js")))
+    minified.write(uglified)
   end
+
+  File.open("release/model-r-#{version}.map", 'w') {|f| f.write(source_map) }
 end
 
 task :default => :release
