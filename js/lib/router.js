@@ -242,6 +242,11 @@ _.extend(History.prototype, /*Events,*/ {
             window.history.replaceState({}, document.title, loc.protocol + '//' + loc.host + this.options.root + this.fragment);
         }
 
+        // Workaround the root having a trailing slash when the visited URL is misisng it.
+        if (this._wantsPushState && this._hasPushState && this.options.root === ('/' + this.fragment + '/')) {
+            window.history.replaceState({}, document.title, loc.protocol + '//' + loc.host + this.options.root);
+        }
+
         if (!this.options.silent) {
             return this.loadUrl();
         }
