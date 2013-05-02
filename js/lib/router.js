@@ -127,7 +127,7 @@ _.extend(components.RapportiveRouter.prototype, /*Events, */ {
     // Given a route, and a URL fragment that it matches, return the array of
     // extracted parameters.
     _extractParameters: function (route, fragment) {
-        return route.exec(fragment).slice(1);
+        return route.exec(fragment.toLowerCase()).slice(1);
     }
 
 });
