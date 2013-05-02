@@ -31,6 +31,7 @@ task :release do
     minified.write("/*** model-r-#{version}.min.js ***/")
     minified.write(uglified)
   end
+  puts "Writing: release/model-r-#{version}.map (source map for minified version)"
 
   File.open("release/model-r-#{version}.map", 'w') {|f| f.write(source_map) }
 end
