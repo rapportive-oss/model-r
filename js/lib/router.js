@@ -225,7 +225,7 @@ _.extend(History.prototype, /*Events,*/ {
         // opened by a non-pushState browser.
         this.fragment = fragment;
         var loc = window.location;
-        var atRoot  = loc.pathname === this.options.root;
+        var atRoot = (loc.pathname + loc.search) === this.options.root;
 
         // If we've started off with a route from a `pushState`-enabled browser,
         // but we're currently in a browser that doesn't support it...
@@ -243,8 +243,8 @@ _.extend(History.prototype, /*Events,*/ {
         }
 
         // Workaround the root having a trailing slash when the visited URL is misisng it.
-        if (this._wantsPushState && this._hasPushState && this.options.root === ('/' + this.fragment + '/')) {
-            window.history.replaceState({}, document.title, loc.protocol + '//' + loc.host + this.options.root);
+        if (this._wantsPushState && this._hasPushState && this.options.root === (loc.pathname + '/')) {
+            window.history.replaceState({}, document.title, loc.protocol + '//' + loc.host + this.options.root + loc.search);
         }
 
         if (!this.options.silent) {
