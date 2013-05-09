@@ -16,24 +16,24 @@ task :release do
   end
 
   version = `git describe --tags --always --dirty`.sub('v', '').tr('-','.').chomp
-  puts "Writing: release/model-r-#{version}.js"
-  File.open("release/model-r-#{version}.js", 'w') do |output|
-    output.puts "/*** model-r-#{version}.js ***/"
+  puts "Writing: release/modelr-#{version}.js"
+  File.open("release/modelr-#{version}.js", 'w') do |output|
+    output.puts "/*** modelr-#{version}.js ***/"
     Dir["js/lib/[a-z]*.js"].sort.each do |file|
       output << File.read(file)
     end
   end
-  puts "Writing: release/model-r-#{version}.min.js"
+  puts "Writing: release/modelr-#{version}.min.js"
 
-  uglified, source_map = Uglifier.new.compile_with_map(File.read("release/model-r-#{version}.js"))
+  uglified, source_map = Uglifier.new.compile_with_map(File.read("release/modelr-#{version}.js"))
 
-  File.open("release/model-r-#{version}.min.js", 'w') do |minified|
-    minified.write("/*** model-r-#{version}.min.js ***/")
+  File.open("release/modelr-#{version}.min.js", 'w') do |minified|
+    minified.write("/*** modelr-#{version}.min.js ***/")
     minified.write(uglified)
   end
-  puts "Writing: release/model-r-#{version}.map (source map for minified version)"
+  puts "Writing: release/modelr-#{version}.map (source map for minified version)"
 
-  File.open("release/model-r-#{version}.map", 'w') {|f| f.write(source_map) }
+  File.open("release/modelr-#{version}.map", 'w') {|f| f.write(source_map) }
 end
 
 task :default => :release

@@ -1,4 +1,4 @@
-Model-R is a minimal model layer for javascript, with the design goal of optimizing for
+Modelr is a minimal model layer for javascript, with the design goal of optimizing for
 developer productivity on modern browsers. (sorry, no IE support yet!).
 
 Key points
