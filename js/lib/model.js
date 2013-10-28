@@ -1,5 +1,5 @@
 /*jslint onevar: false, nomen: false */
-/*global window, lib, _, jQuery */
+/*global window, lib, _ */
 
 // lib.model(_public, _protected, attribute_name_one, attribute_name_two, ...)
 // makes this object a model object with accessor methods for named attributes,

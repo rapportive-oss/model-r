@@ -26,7 +26,7 @@ lib.storage = (function () {
 
     function handleStorageError(name, value, e, opts) {
 
-        opts = jQuery.extend({
+        opts = _.extend({
             on_quota_exceeded: function () {
                 // By default retry once, but if that fails, fallback to using
                 // workingStorage.

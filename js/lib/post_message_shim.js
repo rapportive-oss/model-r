@@ -75,7 +75,7 @@ lib.postMessageShim = function (_public, _protected, opts) {
 
         _(opts.send).each(function (name) {
             _public.on(name, function (msg) {
-                sendMessage(jQuery.extend({action: name, rapportive: true}, msg));
+                sendMessage(_.extend({action: name, rapportive: true}, msg));
             });
         });
     }

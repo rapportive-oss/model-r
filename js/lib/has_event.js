@@ -1,5 +1,5 @@
 /*jslint onevar: false, nomen: false */
-/*global lib, _, jQuery */
+/*global lib, _ */
 
 // Mixin which gives an object event handling capabilities. Call
 // lib.hasEvent(_public, _protected, 'foo') to generate two methods for this event:
