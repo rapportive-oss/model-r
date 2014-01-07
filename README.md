@@ -1,3 +1,8 @@
+<a href="http://www.flickr.com/photos/carolinadoug/4122199755/"><img src="http://farm3.staticflickr.com/2742/4122199755_c58489826a_z.jpg" width="640" height="428" alt="Ford Model R"/></a>
+
+(Photo of [Ford Model R](http://en.wikipedia.org/wiki/Ford_Model_N#Model_R) taken by
+[Douglas Johnson on Flickr](http://www.flickr.com/photos/carolinadoug/4122199755/))
+
 Modelr is a minimal model layer for javascript, with the design goal of optimizing for
 developer productivity on modern browsers. (sorry, no IE support yet!).
 
@@ -8,7 +13,7 @@ Key points
 * Real properties for syntactically awesome getters and setters.
 * Closure based models with public, protected and private variables.
 * No reliance on `this`, or new. Everything is just functions and objects.
-* Powers the 70k lines of javascript in (Rapportive)[http://rapportive.com/].
+* Powers the 70k lines of javascript in [Rapportive](http://rapportive.com/).
 
 Examples
 ========
